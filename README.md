@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://github.com/Que20/freebox-home-api/raw/master/logo.png" data-canonical-src="https://github.com/Que20/freebox-home-api/raw/master/logo.png" width="150" height="150" />
+</p>
+
 # freebox-home-api
 A minimalist version of the Freebox Home API used to interact with homebridge over http plugins.
 
