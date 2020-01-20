@@ -1,0 +1,29 @@
+{
+  "name": "freebox-home-api",
+  "version": "1.0.0",
+  "description": "The Freeebox API - spimplified",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Que20/freebox-home-api.git"
+  },
+  "keywords": [
+    "Freeebox"
+  ],
+  "author": "Kevin Maarek",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Que20/freebox-home-api/issues"
+  },
+  "homepage": "https://github.com/Que20/freebox-home-api#readme",
+  "dependencies": {
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "request": "~2.88.0",
+    "crypto-js": "~3.1.9-1",
+    "envfile": "4.5.0"
+  }
+}
