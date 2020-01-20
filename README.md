@@ -3,7 +3,7 @@
 </p>
 
 # freebox-home-api
-A minimalist version of the Freebox Home API used to interact with homebridge over http plugins.
+A minimalist version of the Freebox Home API.
 
 ## The actual Freebox API
 The Freebox home api is a very complex API, with many endpoints, and many data and information. These data are supposed to be used in clients for the Home features of the Freebox Delta such as the Freebox companion mobile app, used to manage and configure every aspect of the Freebox Home Security items (camera, connect sensors, alarm...).
