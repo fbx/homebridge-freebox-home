@@ -1,6 +1,7 @@
 let express = require('express')
 let fbxAuth = require('./fbx-auth/session')
 let envManager = require('./fbx-auth/env-manager')
+let apiRoutes = require('./routes/api-routes')
 
 require('dotenv').config()
 
@@ -16,7 +17,8 @@ app.listen(port, function () {
 	fbxAuth.fbx(token, trackId, (new_token, new_sessionToken, new_trackId, new_challenge) => {
 		if(new_token != null && new_sessionToken != null) {
 			envManager.update(new_token, new_trackId, (success) => {
-				console.log('Lgtm')
+				apiRoutes.updateAuth(new_sessionToken, new_challenge)
+				app.use('/api', apiRoutes.router)
 			})
 		} else {
 			console.log('[!] Unable to authorize app - shutting down')
