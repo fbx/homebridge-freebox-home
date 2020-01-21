@@ -82,35 +82,40 @@ function grantAccess(trackId, callback) {
 // Request a session with a token and a challenge.
 // This method is exposed and will be called whenever the session needs to be renewed.
 function session(token, challenge, callback) {
-	const password = crypto.HmacSHA1(challenge, token).toString()
-	let url = 'http://mafreebox.freebox.fr/api/v6/login/session'
-	let header = {
-		"X-Fbx-App-Auth": token
-	}
-	let data = {
-		"app_id": "fbx.home-api",
-		"app_version": "1.0",
-		"password": password
-	}
-	request.basicRequest('POST', url, header, data, (statusCode, body) => {
-		if (body.success == false) {
-			console.log("[!] Unable to start session")
-			setTimeout(function() {
-				if (sessionAttemptCount < RETRY_COUNT) {
-					sessionAttemptCount++;
-					console.log("[i] Trying again, attempt "+sessionAttemptCount)
-					session(token, body.result.challenge, callback)
-				} else {
-					console.log("[i] Operation canceled after "+sessionAttemptCount+" attempt")
-					callback(null)
-				}
-			}, RETRY_TIMEOUT)
-		} else {
-			sessionAttemptCount = 0
-			console.log("[i] Session started")
-			callback(body.result.session_token)
+	if(challenge == null || token == null) {
+		console.log("[i] Operation canceled : token and/or challenge doesn't seem good")
+		callback(null)
+	} else {
+		const password = crypto.HmacSHA1(challenge, token).toString()
+		let url = 'http://mafreebox.freebox.fr/api/v6/login/session'
+		let header = {
+			"X-Fbx-App-Auth": token
 		}
-	})
+		let data = {
+			"app_id": "fbx.home-api",
+			"app_version": "1.0",
+			"password": password
+		}
+		request.basicRequest('POST', url, header, data, (statusCode, body) => {
+			if (body.success == false) {
+				console.log("[!] Unable to start session")
+				setTimeout(function() {
+					if (sessionAttemptCount < RETRY_COUNT) {
+						sessionAttemptCount++;
+						console.log("[i] Trying again, attempt "+sessionAttemptCount)
+						session(token, body.result.challenge, callback)
+					} else {
+						console.log("[i] Operation canceled after "+sessionAttemptCount+" attempt")
+						callback(null)
+					}
+				}, RETRY_TIMEOUT)
+			} else {
+				sessionAttemptCount = 0
+				console.log("[i] Session started")
+				callback(body.result.session_token)
+			}
+		})
+	}
 }
 
 module.exports.fbx = fbx
