@@ -1,65 +1,84 @@
 let router = require('express').Router()
+let fbxHome = require('./../fbx-home/fbx-home')
 
 require('dotenv').config()
 
 // List all nodes
-router.get('/node/list/', function(req, res) {
-	res.status(200)
-	res.json({})
+router.get('/node/list', function(req, res) {
+	fbxHome.nodeList(null, (list) => {
+		res.status(200)
+		res.json(list)
+	})
 })
 
 // Get the status of a given node (by id)
 router.get('/node/:id', function(req, res) {
-	res.status(200)
-	res.json({})
+	let nodeId = parseInt(req.params.id, 10)
+	fbxHome.nodeStatus(nodeId, (status) => {
+		res.status(200)
+		res.json({value: status})
+	})
 })
 
 // Get all the contact sensors ids
-router.get('node/contactSensor', function(req, res) {
-	res.status(200)
-	res.json({})
+router.get('/node/contactSensor', function(req, res) {
+	fbxHome.nodeList("dws", (list) => {
+		res.status(200)
+		res.json(list)
+	})
 })
 
 // Get all the motion sensors ids
-router.get('node/motionSensor', function(req, res) {
-	res.status(200)
-	res.json({})
+router.get('/node/motionSensor', function(req, res) {
+	fbxHome.nodeList("pir", (list) => {
+		res.status(200)
+		res.json(list)
+	})
 })
 
 // Activate the main alarm
 router.post('/alarm/main', function(req, res) {
-	res.status(200)
-	res.json({})
+	fbxHome.activateMainAlarm((success) => {
+		res.status(success ? 200 : 400)
+		res.json({})
+	})
 })
 
 // Activate the secondary alarm
 router.post('/alarm/secondary', function(req, res) {
-	res.status(200)
-	res.json({})
+	fbxHome.activateSecondaryAlarm((success) => {
+		res.status(success ? 200 : 400)
+		res.json({})
+	})
 })
 
 // Dectivate all alarms
 router.post('/alarm/off', function(req, res) {
-	res.status(200)
-	res.json({})
+	fbxHome.deactivateAlarm((success) => {
+		res.status(success ? 200 : 400)
+		res.json({})
+	})
 })
 
 // Get the state of the alarm
 router.post('/alarm/state', function(req, res) {
-	res.status(200)
-	res.json({})
+	fbxHome.alarmState((state) => {
+		res.status((state != null) ? 200 : 400)
+		res.json({ value: state})
+	})
 })
 
 // Get the target state of the alarm
 router.post('/alarm/target', function(req, res) {
-	res.status(200)
-	res.json({})
+	fbxHome.alarmTargetState((state) => {
+		res.status((state != null) ? 200 : 400)
+		res.json({ value: state})
+	})
 })
 
 // To notify the controller with new auth data
 function updateAuth(new_session, new_challenge) {
-	// TODO :
-	//controller.updateAuth(new_session, new_challenge)
+	fbxHome.updateAuth(new_session, new_challenge)
 }
 
 module.exports.router = router
