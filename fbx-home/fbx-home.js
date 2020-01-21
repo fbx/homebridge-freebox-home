@@ -1,4 +1,5 @@
 let request = require('./../network/request')
+let nodes = require('./nodes')
 
 var auth = {
 	challenge: null,
@@ -10,13 +11,18 @@ var auth = {
 module.exports.nodeList = function(filter, callback) {
 	if(auth.session) {
 		let url = 'http://mafreebox.freebox.fr/api/v6/home/nodes'
-		authRequest('GET', url, {}, (statusCode, body) => {
-			console.log(body)
-			let list = []
-			callback(list)
+		authRequest('GET', url, null, (statusCode, body) => {
+			if(body.success == true) {
+				let list = nodes.nodeList(body, filter)
+				callback(list)
+			} else {
+				console.log(body)
+				callback([])
+			}
 		})
 	} else {
 		console.log('No session running')
+		callback([])
 	}
 }
 
