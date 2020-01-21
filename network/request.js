@@ -22,28 +22,29 @@ function basicRequest(method, url, headers, body, callback) {
 // and use it to refresh the session if expired.
 // Format for auth :
 // {
-// 		sessionToke: "..."
-//      challenge: "..."
-//		
+// 		session: "...",
+//      challenge: "...",
+//		trackId: "...",
+//		token: "..."
 // }
 // authCallback will return the renewed auth data if renewed
 function freeboxRequest(method, url, body, auth, requestCallback, authCallback) {
+	//console.log('X-Fbx-App-Auth '+auth.session)
 	const options = {
 	    url: url,
 	    method: method,
 	    headers: {
-	    	"X-Fbx-App-Auth": auth.sessionToken
+	    	'X-Fbx-App-Auth': auth.session
 	    },
 	    json: true,
 	    body: body
-	};
+	}
 
 	request(options, function(err, response, body) {
 		// if the challenge has changed -> request new session token
 		// returns the new auth stuff and retry the request
 		if ((body.error_code != null && body.error_code == 'auth_required') && auth.challenge != body.result.challenge) {
-			require('dotenv').config()
-			fbxAuth.session(process.env.TOKEN, body.result.challenge, (new_sessionToken) => {
+			fbxAuth.session(auth.token, body.result.challenge, (new_sessionToken) => {
 				authCallback(new_sessionToken, body.result.challenge)
 				let new_auth = {
 					challenge: body.result.challenge,
@@ -56,7 +57,7 @@ function freeboxRequest(method, url, body, auth, requestCallback, authCallback) 
 		} else {
 			requestCallback(response.statusCode, body)
 		}
-	});
+	})
 }
 
 module.exports.basicRequest = basicRequest
