@@ -38,7 +38,7 @@ function freeboxRequest(method, url, body, auth, requestCallback, authCallback) 
 	    body: body
 	};
 
-	req(options, function(err, response, body) {
+	request(options, function(err, response, body) {
 		// if the challenge has changed -> request new session token
 		// returns the new auth stuff and retry the request
 		if ((body.error_code != null && body.error_code == 'auth_required') && auth.challenge != body.result.challenge) {
