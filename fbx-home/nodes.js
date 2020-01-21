@@ -19,7 +19,7 @@ module.exports.nodeList = function(object, filter) {
 				statusId: endpointForStatus
 			}
 			if(filter != null) {
-				if(type == filter) {
+				if(item.type == filter) {
 					items.push(item)
 				}
 			} else {
