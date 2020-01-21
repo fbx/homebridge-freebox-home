@@ -47,7 +47,9 @@ function freeboxRequest(method, url, body, auth, requestCallback, authCallback) 
 				authCallback(new_sessionToken, body.result.challenge)
 				let new_auth = {
 					challenge: body.result.challenge,
-					sessionToken: new_sessionToken
+					sessionToken: new_sessionToken,
+					token: auth.token,
+					trackId: auth.trackId
 				}
 				freeboxRequest(method, url, body, new_auth, requestCallback, authCallback)
 			})

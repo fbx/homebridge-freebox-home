@@ -77,8 +77,8 @@ router.post('/alarm/target', function(req, res) {
 })
 
 // To notify the controller with new auth data
-function updateAuth(new_session, new_challenge) {
-	fbxHome.updateAuth(new_session, new_challenge)
+function updateAuth(new_session, new_challenge, token, trackId) {
+	fbxHome.updateAuth(new_session, new_challenge, token, trackId)
 }
 
 module.exports.router = router

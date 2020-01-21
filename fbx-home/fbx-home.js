@@ -2,7 +2,9 @@ let request = require('./../network/request')
 
 var auth = {
 	challenge: null,
-	session: null
+	session: null,
+	trackId: null,
+	token: null
 }
 
 module.exports.nodeList = function(filter, callback) {
@@ -49,17 +51,18 @@ module.exports.alarmTargetState = function(callback) {
 }
 
 // Will be called by every auth request that will need to update auth values.
-function updateAuth(new_session, new_challenge) {
+function updateAuth(new_session, new_challenge, token, trackId) {
 	if (auth.session != new_session) {
-		console.log("[-] current session  : "+new_session)
+		console.log("[-] renewed session  : "+new_session)
 		auth.session = new_session
 		auth.challenge = new_challenge
+		auth.token = token
+		auth.trackId = trackId
 	}
 }
 
 function authRequest(method, url, body, callback) {
 	if(auth.challenge != null && auth.session != null) {
-		console.log('Requesting with '+auth.session)
 		request.freeboxRequest(method, url, body, auth, callback, updateAuth)
 	}
 }
