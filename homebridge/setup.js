@@ -1,6 +1,7 @@
 let fbxHome = require('./../fbx-home/fbx-home')
 let fs = require('fs')
 
+const RETRY_TIMEOUT = 2000 // 2 seconds
 
 module.exports.setupHomebridge = function(callback) {
     const homedir = require('os').homedir()
@@ -15,6 +16,7 @@ module.exports.setupHomebridge = function(callback) {
         let config = JSON.parse(data)
 
         getAccessories((list) => {
+            config.accessories = []
             for(accessory of list) {
                 config.accessories.push(accessory)
             }
@@ -32,38 +34,35 @@ function getAccessories(callback) {
     var accessories = []
     DWSItems((dwss) => {
         PIRItems((pirs) => {
-            for(dws of dwss) {
-                accessories.push(dws)
-            }
-            for(pir of pirs) {
-                accessories.push(pir)
-            }
-            callback(accessories)
+            AlarmItems((alarms) => {
+                for(alarm in alarms) {
+                    accessories.push(alarms)
+                }
+                for(dws of dwss) {
+                    accessories.push(dws)
+                }
+                for(pir of pirs) {
+                    accessories.push(pir)
+                }
+                callback(accessories)
+            })
         })
     })
 }
 
 function DWSItems(callback) {
-    fbxHome.getNodeList("dws", (list) => {
-        var accessories = []
-        for(node of list) {
-            accessories.push(buildAccessory(node))
-        }
-        callback(accessories)
-    })
+    getAccessoryOfType('dws', callback)
 }
 
 function PIRItems(callback) {
-    fbxHome.getNodeList("pir", (list) => {
-        var accessories = []
-        for(node of list) {
-            accessories.push(buildAccessory(node))
-        }
-        callback(accessories)
-    })
+    getAccessoryOfType('pir', callback)
 }
 
-function buildAccessory(node) {
+function AlarmItems(callback) {
+    getAccessoryOfType('alarm', callback)
+}
+
+function buildSensorAccessory(node) {
     let type = node.type == 'pir' ? 'motion-sensor' : 'ContactSensor'
     return {
         accessory: type,
@@ -71,6 +70,76 @@ function buildAccessory(node) {
         pollInterval: 500,
         statusUrl: 'http://localhost:8888/api/node/'+node.id
     }
+}
+
+function buildAlarmAccessory(node) {
+    let alarm = {
+        accessory: "Http-SecuritySystem",
+        name: "Alarme",
+        username: "",
+        password: "",
+        immediately: false,
+        polling: true,
+        pollInterval: 3000,
+        http_method: 'POST',
+        urls: {
+            "stay": {
+                "url": "http://localhost:8888/api/alarm/off",
+                "body": null
+            },
+            "away": {
+                "url": "http://localhost:8888/api/alarm/main",
+                "body": null
+            },
+            "night": {
+                "url": "http://localhost:8888/api/alarm/secondary",
+                "body": null
+            },
+            "disarm": {
+                "url": "http://localhost:8888/api/alarm/off",
+                "body": null
+            },
+            "readCurrentState": {
+                "url": "http://localhost:8888/api/alarm/state",
+                "body": null
+            },
+            "readTargetState": {
+                "url": "http://localhost:8888/api/alarm/target",
+                "body": null,
+                "headers": {
+                    "Content-Type": "text/html"
+                }
+            }
+        }
+    }
+    return alarm
+}
+
+function isIterable(obj) {
+    if (obj == null) {
+        return false
+    }
+    return typeof obj[Symbol.iterator] === 'function'
+}
+
+function getAccessoryOfType(type, callback) {
+    fbxHome.getNodeList(type, (list) => {
+        if(isIterable(list)) {
+            var accessories = []
+            for(node of list) {
+                if(type == 'alarm') {
+                    accessories.push(buildAlarmAccessory(node))
+                } else {
+                    accessories.push(buildSensorAccessory(node))
+                }
+            }
+            callback(accessories)
+        } else {
+            setTimeout(function() {
+				DWSItems(callback)
+			}, RETRY_TIMEOUT)
+        }
+    })
 }
 
 function createEmptyConfigFile(dir) {
