@@ -29,6 +29,6 @@ module.exports.nodeList = function(object, filter) {
 		}
 		return items
 	} else {
-		return []
+		return null
 	}
 }
