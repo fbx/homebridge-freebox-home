@@ -46,14 +46,19 @@ function auth(callback) {
 // Start a session with a token and a trackId.
 function start(token, trackId, callback) {
 	grantAccess(trackId, (accessGranted, challenge) => {
-		if (accessGranted) {
+		if (accessGranted == 1) {
 			accessAttemptCount = 0
 			session(token, challenge, (sessionToken) => {
 				callback(challenge, sessionToken)
 			})
-		} else {
+		}
+		if (accessGranted == 0) {
+			console.log("[i] Operation canceled after "+accessAttemptCount+" attempt, access has not been granted")
+			callback(null, null)
+		}
+		if (accessGranted == 2) {
 			setTimeout(function() {
-				if (accessAttemptCount < RETRY_COUNT) {
+				if (accessAttemptCount < Number.MAX_SAFE_INTEGER) {
 					accessAttemptCount++;
 					console.log("[i] Trying again, attempt "+accessAttemptCount)
 					start(token, trackId, callback)
@@ -70,11 +75,20 @@ function start(token, trackId, callback) {
 function grantAccess(trackId, callback) {
 	let url = 'http://mafreebox.freebox.fr/api/v6/login/authorize/'+trackId
 	request.basicRequest('GET', url, {}, {}, (statusCode, body) => {
-		if (body != null && body.result != null && body.result.status == 'granted') {
-			callback(true, body.result.challenge)
+		console.log(body)
+		if (body != null && body.result != null) {
+			if (body.result.status == 'granted') {
+				callback(1, body.result.challenge)
+			} else if(body.result.status == 'pending') {
+				console.log("[!] Pending access, check your box")
+				callback(2, null)
+			} else {
+				console.log("[!] Access denied")
+				callback(0, null)
+			}
 		} else {
-			console.log("[!] Access denied, check your box")
-			callback(false, null)
+			console.log("[!] Unable to check access")
+			callback(0, null)
 		}
 	})
 }
