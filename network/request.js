@@ -1,6 +1,8 @@
 let request = require('request')
 let fbxAuth = require('./../fbx-auth/session')
 
+const RETRY_TIMEOUT = 2000 // 2 seconds
+
 // Used to launch a simple request.
 // Callback will return the status code and the body.
 function basicRequest(method, url, headers, body, callback) {
@@ -54,6 +56,11 @@ function freeboxRequest(method, url, body, auth, requestCallback, authCallback) 
 				}
 				freeboxRequest(method, url, body, new_auth, requestCallback, authCallback)
 			})
+		} else if(body.error_code != null && body.error_code == 'insufficient_rights') {
+			console.log('[!] Insufficient rights to request home api. Trying again...')
+			setTimeout(function() {
+				freeboxRequest(method, url, body, auth, requestCallback, authCallback)
+			}, RETRY_TIMEOUT)
 		} else {
 			requestCallback(response.statusCode, body)
 		}
