@@ -16,7 +16,8 @@ module.exports.nodeList = function(object, filter) {
 				id: node.id,
 				type: node.category,
 				label: node.label,
-				statusId: endpointForStatus
+				statusId: endpointForStatus,
+				data: node
 			}
 			if(filter != null) {
 				if(item.type == filter) {
