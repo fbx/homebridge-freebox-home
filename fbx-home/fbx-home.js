@@ -8,7 +8,7 @@ var auth = {
 	token: null
 }
 
-module.exports.nodeList = function(filter, callback) {
+module.exports.getNodeList = function(filter, callback) {
 	if(auth.session) {
 		let url = 'http://mafreebox.freebox.fr/api/v6/home/nodes'
 		authRequest('GET', url, null, (statusCode, body) => {

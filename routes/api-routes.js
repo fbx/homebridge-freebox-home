@@ -5,7 +5,7 @@ require('dotenv').config()
 
 // List all nodes
 router.get('/node/list', function(req, res) {
-	fbxHome.nodeList(null, (list) => {
+	fbxHome.getNodeList(null, (list) => {
 		res.status(200)
 		res.json(list)
 	})
@@ -22,7 +22,7 @@ router.get('/node/:id', function(req, res) {
 
 // Get all the contact sensors ids
 router.get('/node/list/contactSensor', function(req, res) {
-	fbxHome.nodeList("dws", (list) => {
+	fbxHome.getNodeList("dws", (list) => {
 		res.status(200)
 		res.json(list)
 	})
@@ -30,7 +30,7 @@ router.get('/node/list/contactSensor', function(req, res) {
 
 // Get all the motion sensors ids
 router.get('/node/list/motionSensor', function(req, res) {
-	fbxHome.nodeList("pir", (list) => {
+	fbxHome.getNodeList("pir", (list) => {
 		res.status(200)
 		res.json(list)
 	})
