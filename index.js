@@ -16,7 +16,7 @@ const trackId = process.env.TRACK
 
 let app = express()
 
-app.listen(port, function () {
+let server = app.listen(port, function () {
 	console.log('[-] Running on port : 8888')
 	console.log('[i] Start init sequece')
 	fbxAuth.fbx(token, trackId, (new_token, new_sessionToken, new_trackId, new_challenge) => {
@@ -32,7 +32,7 @@ app.listen(port, function () {
 			})
 		} else {
 			console.log('[!] Unable to authorize app - shutting down')
-			app.close()
+			server.close()
 		}
 	})
 })
