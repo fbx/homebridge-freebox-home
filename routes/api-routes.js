@@ -1,8 +1,6 @@
 let router = require('express').Router()
 let fbxHome = require('./../fbx-home/fbx-home')
 
-require('dotenv').config()
-
 // List all nodes
 router.get('/node/list', function(req, res) {
 	fbxHome.getNodeList(null, (list) => {

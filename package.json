@@ -4,6 +4,8 @@
   "description": "The Freeebox API - spimplified",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
+    "stop": "pkill FBX-HOME-API",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

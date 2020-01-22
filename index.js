@@ -5,6 +5,8 @@ let apiRoutes = require('./routes/api-routes')
 
 require('dotenv').config()
 
+process.title = "FBX-HOME-API"
+
 const port = 8888
 
 const token = process.env.TOKEN
