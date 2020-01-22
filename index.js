@@ -3,6 +3,8 @@ let fbxAuth = require('./fbx-auth/session')
 let envManager = require('./fbx-auth/env-manager')
 let apiRoutes = require('./routes/api-routes')
 
+let homebridge = require('./homebridge/setup')
+
 require('dotenv').config()
 
 process.title = "FBX-HOME-API"
@@ -22,6 +24,11 @@ app.listen(port, function () {
 			envManager.update(new_token, new_trackId, (success) => {
 				apiRoutes.updateAuth(new_sessionToken, new_challenge, new_token, new_trackId)
 				app.use('/api', apiRoutes.router)
+				homebridge.setupHomebridge((hb_success) => {
+					if(!hb_success) {
+						console.log('[!] Unable to setup homebridge config')
+					}
+				})
 			})
 		} else {
 			console.log('[!] Unable to authorize app - shutting down')
