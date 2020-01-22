@@ -75,7 +75,6 @@ function start(token, trackId, callback) {
 function grantAccess(trackId, callback) {
 	let url = 'http://mafreebox.freebox.fr/api/v6/login/authorize/'+trackId
 	request.basicRequest('GET', url, {}, {}, (statusCode, body) => {
-		console.log(body)
 		if (body != null && body.result != null) {
 			if (body.result.status == 'granted') {
 				callback(1, body.result.challenge)
