@@ -60,6 +60,16 @@ module.exports.getNode = function(id, callback) {
 module.exports.nodeStatus = function(id, callback) {
 	if(auth.session) {
 		this.getNode(id, (node) => {
+			if (node == null) {
+				console.log('[!] Requested status for a non-sensor node.')
+				callback(null)
+				return
+			}
+			if (node.type != 'dws' && node.type != 'pir') {
+				console.log('[!] Requested status for an inexistant node.')
+				callback(null)
+				return
+			}
 			let url = 'http://mafreebox.freebox.fr/api/v6/home/endpoints/'+id+'/'+node.statusId
 			authRequest('GET', url, null, (statusCode, body) => {
 				if(body.success == true) {
