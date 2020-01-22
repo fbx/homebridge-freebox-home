@@ -16,7 +16,7 @@ router.get('/node/:id', function(req, res) {
 	let nodeId = parseInt(req.params.id, 10)
 	fbxHome.nodeStatus(nodeId, (status) => {
 		res.status(200)
-		res.json({value: status})
+		res.send(state.toString())
 	})
 })
 
@@ -40,7 +40,7 @@ router.get('/node/list/motionSensor', function(req, res) {
 router.post('/alarm/main', function(req, res) {
 	fbxHome.activateMainAlarm((success) => {
 		res.status(success ? 200 : 400)
-		res.json({})
+		res.send(null)
 	})
 })
 
@@ -48,7 +48,7 @@ router.post('/alarm/main', function(req, res) {
 router.post('/alarm/secondary', function(req, res) {
 	fbxHome.activateSecondaryAlarm((success) => {
 		res.status(success ? 200 : 400)
-		res.json({})
+		res.send(null)
 	})
 })
 
@@ -56,7 +56,7 @@ router.post('/alarm/secondary', function(req, res) {
 router.post('/alarm/off', function(req, res) {
 	fbxHome.deactivateAlarm((success) => {
 		res.status(success ? 200 : 400)
-		res.json({})
+		res.send(null)
 	})
 })
 
@@ -64,7 +64,7 @@ router.post('/alarm/off', function(req, res) {
 router.post('/alarm/state', function(req, res) {
 	fbxHome.alarmState((state) => {
 		res.status((state != null) ? 200 : 400)
-		res.json({ value: state})
+		res.send(state.toString())
 	})
 })
 
@@ -72,7 +72,7 @@ router.post('/alarm/state', function(req, res) {
 router.post('/alarm/target', function(req, res) {
 	fbxHome.alarmTargetState((state) => {
 		res.status((state != null) ? 200 : 400)
-		res.json({ value: state})
+		res.send(state.toString())
 	})
 })
 
