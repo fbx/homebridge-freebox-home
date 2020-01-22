@@ -32,3 +32,51 @@ module.exports.nodeList = function(object, filter) {
 		return null
 	}
 }
+
+module.exports.node = function(object) {
+	if(object.success == true) {
+		var endpointForStatus = null
+		for(endpoint of object.result.show_endpoints) {
+			if(endpoint.name == 'trigger') {
+				endpointForStatus = endpoint.id
+			}
+		}
+		let item = {
+			id: object.result.id,
+			type: object.result.category,
+			label: object.result.label,
+			statusId: endpointForStatus
+		}
+		return item
+	} else {
+		return null
+	}
+}
+
+module.exports.retrieveNode =  function(id, list) {
+	if(list) {
+		for(node of list) {
+			if(node.id == id) {
+				return node
+			} else {
+				return null
+			}
+		}
+	} else {
+		return null
+	}
+}
+
+module.exports.retrieveAlarmNode = function(list) {
+	if(list) {
+		for(node of list) {
+			if(node.type == "alarm") {
+				return node
+			} else {
+				return null
+			}
+		}
+	} else {
+		return null
+	}
+}
