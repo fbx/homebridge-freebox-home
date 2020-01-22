@@ -19,6 +19,8 @@ function basicRequest(method, url, headers, body, callback) {
 	})
 }
 
+var RETRY_COUNT = 0
+
 // Used to launch a freebox authentified request.
 // It will add the authentication header with the passed auth data,
 // and use it to refresh the session if expired.
@@ -56,13 +58,26 @@ function freeboxRequest(method, url, body, auth, requestCallback, authCallback) 
 				}
 				freeboxRequest(method, url, body, new_auth, requestCallback, authCallback)
 			})
-		} else if(body.error_code != null && body.error_code == 'insufficient_rights') {
-			console.log('[!] Insufficient rights to request home api. Trying again...')
-			setTimeout(function() {
-				freeboxRequest(method, url, body, auth, requestCallback, authCallback)
-			}, RETRY_TIMEOUT)
 		} else {
-			requestCallback(response.statusCode, body)
+			if(body.error_code != null && body.error_code == 'insufficient_rights') {
+				console.log('[!] Insufficient rights to request home api. Trying again...')
+				setTimeout(function() {
+					freeboxRequest(method, url, body, auth, requestCallback, authCallback)
+				}, RETRY_TIMEOUT)
+			} else if(body.success == false) {
+				setTimeout(function() {
+					if(RETRY_COUNT < 3) {
+						freeboxRequest(method, url, body, auth, requestCallback, authCallback)
+						RETRY_COUNT++
+					} else {
+						requestCallback(response.statusCode, body)
+						RETRY_COUNT = 0
+						return
+					}
+				}, RETRY_TIMEOUT)
+			} else {
+				requestCallback(response.statusCode, body)
+			}
 		}
 	})
 }
