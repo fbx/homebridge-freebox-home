@@ -1,12 +1,12 @@
 let fbxHome = require('./../fbx-home/fbx-home')
+let fs = require('fs')
+
 
 module.exports.setupHomebridge = function(callback) {
     const homedir = require('os').homedir()
     let file = homedir+'/.homebridge/config.json'
-    const fs = require('fs')
     if(!fs.existsSync(file)) {
-        callback(false)
-        return
+        createEmptyConfigFile(file)
     }
     fs.readFile(file, (err, data) => {
         if(err) {
@@ -71,4 +71,25 @@ function buildAccessory(node) {
         pollInterval: 500,
         statusUrl: 'http://localhost:8888/api/node/'+node.id
     }
+}
+
+function createEmptyConfigFile(dir) {
+    let data = {
+            "bridge": {
+                "name": "Homebridge",
+                "username": "CC:22:3D:E3:CE:30",
+                "port": 51826,
+                "pin": "031-45-154"
+            },
+            "description": "Homebridge configuration file.",
+            "ports": {
+                "start": 52100,
+                "end": 52150,
+                "comment": "This section is used to control the range of ports that separate accessory (like camera or television) should be bind to."
+            },
+            "accessories": [],
+            "platforms": []
+        }
+    fs.writeFileSync(dir, JSON.stringify(data));
+    console.log('[i] Homebridge config file created')
 }
