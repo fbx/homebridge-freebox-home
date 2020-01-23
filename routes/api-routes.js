@@ -63,19 +63,65 @@ router.post('/alarm/off', function(req, res) {
 	})
 })
 
+// Dectivate all alarms as well
+router.post('/alarm/home', function(req, res) {
+	fbxHome.homeAlarm((success) => {
+		res.status(success ? 200 : 400)
+		res.send(null)
+	})
+})
+
 // Get the state of the alarm
 router.post('/alarm/state', function(req, res) {
-	fbxHome.alarmState((state) => {
-		res.status((state != null) ? 200 : 400)
-		res.send(state.toString())
+	fbxHome.alarmState((state, target) => {
+		var value = null
+		switch(state) {
+			case 'idle':
+				if(target == 3) {
+					value = 0
+				} else {
+					value = 3
+				}
+				break
+			case 'alarm1_armed':
+				value = 1
+				break
+			case 'alarm2_armed':
+				value = 2
+				break
+			case 'alert':
+				value = 4
+				break
+			default:
+				value = 0
+				break
+		}
+		res.status((state != null || value == 5) ? 200 : 400)
+		res.send(value.toString())
 	})
 })
 
 // Get the target state of the alarm
 router.post('/alarm/target', function(req, res) {
 	fbxHome.alarmTargetState((state) => {
-		res.status((state != null) ? 200 : 400)
-		res.send(state.toString())
+		if(state == null) {
+			res.status(400)
+			res.send(null)
+		} else {
+			var value = 0
+			switch(state) {
+				case 0:
+					value = 3
+				case 1:
+					value = 1
+				case 2:
+					value = 2
+				case 3:
+					value = 0
+			}
+			res.status(200)
+			res.send(value.toString())
+		}
 	})
 })
 

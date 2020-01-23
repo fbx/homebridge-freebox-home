@@ -84,7 +84,7 @@ function buildAlarmAccessory(node) {
         http_method: 'POST',
         urls: {
             "stay": {
-                "url": "http://localhost:8888/api/alarm/off",
+                "url": "http://localhost:8888/api/alarm/home",
                 "body": null
             },
             "away": {
