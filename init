@@ -33,9 +33,13 @@ echo "[>] Done."
 
 echo "[i] Installing dependancies for freebox home server"
 npm install
-touch .env && echo "TOKEN=null\nTRACK=null" > test.env
+touch .env && printf "TOKEN=null\nTRACK=null" > .env
 echo "[>] Done."
 
 echo "[i] Starting services"
+pm2
+pm2 startup
+
 pm2 start /usr/bin/homebridge -l ~/log/homebridge
 pm2 start index.js -l ~/log/server
+pm2 save
