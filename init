@@ -37,5 +37,5 @@ touch .env && echo "TOKEN=null\nTRACK=null" > test.env
 echo "[>] Done."
 
 echo "[i] Starting services"
-pm2 start homebridge -l ~/log/homebridge
+pm2 start /usr/bin/homebridge -l ~/log/homebridge
 pm2 start index.js -l ~/log/server
