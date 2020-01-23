@@ -1,0 +1,41 @@
+#!/bin/bash
+
+if [[ $EUID -ne 0 ]]; then
+   echo "This script must be run as root" 
+   exit 1
+fi
+
+echo "[i] Installing curl..."
+sudo apt-get install curl
+echo "[>] Done."
+
+echo "[i] Installing nodejs..."
+curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+sudo apt-get install nodejs
+echo "[>] Done."
+
+echo "[i] Installing homebridge..."
+sudo npm install -g --unsafe-perm homebridge
+echo "[>] Done."
+
+echo "[i] Installing homebridge plugin..."
+echo "[i] Motion sensor"
+sudo npm install -g homebridge-http-pir-motion-sensor
+echo "[i] Contact sensor"
+sudo npm install -g homebridge-http-contact-sensor
+echo "[i] Alarm"
+sudo npm install -g homebridge-http-securitysystem
+echo "[>] Done."
+
+echo "[i] Installing node process manager..."
+sudo npm install -g pm2
+echo "[>] Done."
+
+echo "[i] Installing dependancies for freebox home server"
+npm install
+touch .env && echo "TOKEN=null\nTRACK=null" > test.env
+echo "[>] Done."
+
+echo "[i] Starting services"
+pm2 start homebridge
+pm2 start index.js
