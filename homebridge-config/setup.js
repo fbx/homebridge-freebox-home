@@ -1,4 +1,4 @@
-let fbxHome = require('./../fbx-home/fbx-home')
+let fbxHome = require('../fbx-home/fbx-home')
 let fs = require('fs')
 
 const RETRY_TIMEOUT = 2000 // 2 seconds

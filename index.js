@@ -3,7 +3,7 @@ let fbxAuth = require('./fbx-auth/session')
 let envManager = require('./fbx-auth/env-manager')
 let apiRoutes = require('./routes/api-routes')
 
-let homebridge = require('./homebridge/setup')
+let homebridge = require('./homebridge-config/setup')
 
 require('dotenv').config()
 
