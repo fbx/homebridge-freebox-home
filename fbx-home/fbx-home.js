@@ -11,7 +11,7 @@ var auth = {
 }
 
 var local_node_list = null
-var local_alarm_target = null
+var local_alarm_target = 0
 
 module.exports.getNodeList = function(filter, callback) {
 	if(auth.session) {
@@ -135,24 +135,43 @@ module.exports.activateMainAlarm = function(callback) {
 	}
 }
 
+module.exports.checkAlarmActivable = function(callback) {
+	this.alarmState((state) => {
+		if(state != 'idle') {
+			this.deactivateAlarm((success) => {
+				callback(success)
+			})
+		} else {
+			callback(true)
+		}
+	})
+}
+
 module.exports.activateSecondaryAlarm = function(callback) {
 	if(auth.session) {
-		this.getAlarm((alarm_node) => {
-			let ep_id = alarm.secondaryAlarmRequestId(alarm_node.data)
-			let url = 'http://mafreebox.freebox.fr/api/v6/home/endpoints/'+alarm_node.id+'/'+ep_id
-			let data = {
-				id: alarm_node.id,
-				value: null
+		this.checkAlarmActivable((activable) => {
+			if(activable) {
+				this.getAlarm((alarm_node) => {
+					let ep_id = alarm.secondaryAlarmRequestId(alarm_node.data)
+					let url = 'http://mafreebox.freebox.fr/api/v6/home/endpoints/'+alarm_node.id+'/'+ep_id
+					let data = {
+						id: alarm_node.id,
+						value: null
+					}
+					local_alarm_target = 2
+					authRequest('PUT', url, data, (statusCode, body) => {
+						if(body.success == true) {
+							callback(true)
+						} else {
+							callback(null)
+						}
+					})
+				})
+			} else {
+				callback(null)
 			}
-			local_alarm_target = 2
-			authRequest('PUT', url, data, (statusCode, body) => {
-				if(body.success == true) {
-					callback(true)
-				} else {
-					callback(null)
-				}
-			})
 		})
+		
 	} else {
 		console.log('No session running')
 		callback(null)
@@ -184,15 +203,39 @@ module.exports.deactivateAlarm = function(callback) {
 	}
 }
 
+module.exports.homeAlarm = function(callback) {
+	if(auth.session) {
+		this.getAlarm((alarm_node) => {
+			let ep_id = alarm.alarmOffId(alarm_node.data)
+			let url = 'http://mafreebox.freebox.fr/api/v6/home/endpoints/'+alarm_node.id+'/'+ep_id
+			let data = {
+				id: alarm_node.id,
+				value: null
+			}
+			local_alarm_target = 3
+			authRequest('PUT', url, data, (statusCode, body) => {
+				if(body.success == true) {
+					callback(true)
+				} else {
+					console.log(body)
+					callback(null)
+				}
+			})
+		})
+	} else {
+		console.log('No session running')
+		callback(null)
+	}
+}
+
 module.exports.alarmState = function(callback) {
 	if(auth.session) {
 		this.getAlarm((alarm_node) => {
 			let ep_id = alarm.alarmStateId(alarm_node.data)
 			let url = 'http://mafreebox.freebox.fr/api/v6/home/endpoints/'+alarm_node.id+'/'+ep_id
 			authRequest('GET', url, null, (statusCode, body) => {
-				console.log(body)
 				if(body.success == true) {
-					callback(body.result.value)
+					callback(body.result.value, local_alarm_target)
 				} else {
 					console.log(body)
 					callback(null)
