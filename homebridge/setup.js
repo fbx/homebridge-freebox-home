@@ -35,8 +35,8 @@ function getAccessories(callback) {
     DWSItems((dwss) => {
         PIRItems((pirs) => {
             AlarmItems((alarms) => {
-                for(alarm in alarms) {
-                    accessories.push(alarms)
+                for(alarm of alarms) {
+                    accessories.push(alarm)
                 }
                 for(dws of dwss) {
                     accessories.push(dws)
