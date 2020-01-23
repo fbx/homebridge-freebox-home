@@ -1,22 +1,32 @@
 #!/bin/bash
 
-if [[ $EUID -ne 0 ]]; then
-   echo "This script must be run as root" 
-   exit 1
+CURL_EXISTS=`which curl`
+
+if [ ! -f ${CURL_EXISTS} ]
+then
+    echo "[i] Installing curl..."
+    sudo apt-get install curl
+    echo "[>] Done."
 fi
 
-echo "[i] Installing curl..."
-sudo apt-get install curl
-echo "[>] Done."
+NODE_EXISTS=`which curl`
 
-echo "[i] Installing nodejs..."
-curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
-sudo apt-get install nodejs
-echo "[>] Done."
+if [ ! -f ${NODE_EXISTS} ]
+then
+    echo "[i] Installing nodejs..."
+    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+    sudo apt-get install nodejs
+    echo "[>] Done."
+fi
 
-echo "[i] Installing homebridge..."
-sudo npm install -g --unsafe-perm homebridge
-echo "[>] Done."
+HOMEBRIDGE_EXISTS=`which homebridge`
+
+if [ ! -f ${HOMEBRIDGE_EXISTS} ]
+then
+    echo "[i] Installing homebridge..."
+    sudo npm install -g --unsafe-perm homebridge
+    echo "[>] Done."
+fi
 
 echo "[i] Installing homebridge plugin..."
 echo "[i] Motion sensor"
@@ -27,9 +37,14 @@ echo "[i] Alarm"
 sudo npm install -g homebridge-http-securitysystem
 echo "[>] Done."
 
-echo "[i] Installing node process manager..."
-sudo npm install -g pm2
-echo "[>] Done."
+PM_EXISTS=`which pm2`
+
+if [ ! -f ${PM_EXISTS} ]
+then
+    echo "[i] Installing node process manager..."
+    sudo npm install -g pm2
+    echo "[>] Done."
+fi
 
 echo "[i] Installing dependancies for freebox home server"
 npm install
