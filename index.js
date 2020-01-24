@@ -11,13 +11,26 @@ process.title = "FBX-HOME-API"
 
 const port = 8888
 
-const token = process.env.TOKEN
-const trackId = process.env.TRACK
+var token = process.env.TOKEN
+var trackId = process.env.TRACK
 
 let app = express()
 
 let server = app.listen(port, function () {
 	console.log('[-] Running on port : 8888')
+	serverStart((success) => {
+		if(success) {
+			console.log('[i] Server is up and running')
+		} else {
+			console.log('[i] Unable to start server - shutting down')
+			server.close()
+		}
+	})
+})
+
+const RETRY_TIMEOUT = 2000 // 2 seconds
+
+function serverStart(callback) {
 	console.log('[i] Start init sequece')
 	fbxAuth.fbx(token, trackId, (new_token, new_sessionToken, new_trackId, new_challenge) => {
 		if(new_token != null && new_sessionToken != null) {
@@ -27,12 +40,27 @@ let server = app.listen(port, function () {
 				homebridge.setupHomebridge((hb_success) => {
 					if(!hb_success) {
 						console.log('[!] Unable to setup homebridge config')
+						callback(false)
+					} else {
+						callback(true)
 					}
 				})
 			})
 		} else {
-			console.log('[!] Unable to authorize app - shutting down')
-			server.close()
+			if(token != null && trackId != null) {
+				console.log('[!] Unable to authorize app with current token')
+				console.log('[!] Requesting new token...')
+				token = null
+				trackId = null
+				setTimeout(function() {
+					serverStart(callback)
+				}, RETRY_TIMEOUT)
+			} else {
+				console.log('[i] Unable to start server - trung again...')
+				setTimeout(function() {
+					serverStart(callback)
+				}, RETRY_TIMEOUT)
+			}
 		}
 	})
-})
+}
