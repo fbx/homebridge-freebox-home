@@ -14,14 +14,22 @@ var sessionAttemptCount = 0
 function fbx(token, trackId, callback) {
 	if ((token == null || token == 'null') || (trackId == null || trackId == 'null')) {
 		auth((new_token, new_trackId) => {
-			start(new_token, new_trackId, (challenge, sessionToken) => {
-				callback(new_token, sessionToken, new_trackId, challenge)
-			})
+			if(new_token != null && new_trackId != null) {
+				start(new_token, new_trackId, (challenge, sessionToken) => {
+					callback(new_token, sessionToken, new_trackId, challenge)
+				})
+			} else {
+				callback(null, null, null, null)
+			}
 		})
 	} else {
 		console.log("[i] Starting session with existing token")
 		start(token, trackId, (challenge, sessionToken) => {
-			callback(token, sessionToken, trackId, challenge)
+			if(challenge != null && sessionToken != null) {
+				callback(token, sessionToken, trackId, challenge)
+			} else {
+				callback(null, null, null, null)
+			}
 		})
 	}
 }
@@ -37,9 +45,13 @@ function auth(callback) {
 	}
 	let header = { }
 	request.basicRequest('POST', url, header, data, (statusCode, body) => {
-		let trackId = body.result.track_id
-		let token = body.result.app_token
-		callback(token, trackId)
+		if(body != null) {
+			let trackId = body.result.track_id
+			let token = body.result.app_token
+			callback(token, trackId)
+		} else {
+			callback(null, null)
+		}
 	})
 }
 
