@@ -2,45 +2,51 @@
 
 CURL_EXISTS=`which curl`
 
-if [ ! -f ${CURL_EXISTS} ]
-then
+if [ ! -d ${CURL_EXISTS} ]; then
     echo "[i] Installing curl..."
-    sudo apt-get install curl
+    sudo apt-get --assume-yes install curl
     echo "[>] Done."
 fi
 
 NODE_EXISTS=`which curl`
 
-if [ ! -f ${NODE_EXISTS} ]
-then
+if [ ! -d ${NODE_EXISTS} ]; then
     echo "[i] Installing nodejs..."
     curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
-    sudo apt-get install nodejs
+    sudo apt-get --assume-yes install nodejs
     echo "[>] Done."
 fi
 
 HOMEBRIDGE_EXISTS=`which homebridge`
 
-if [ ! -f ${HOMEBRIDGE_EXISTS} ]
-then
+if [ ! -d ${HOMEBRIDGE_EXISTS} ]; then
     echo "[i] Installing homebridge..."
     sudo npm install -g --unsafe-perm homebridge
     echo "[>] Done."
 fi
 
-echo "[i] Installing homebridge plugin..."
-echo "[i] Motion sensor"
-sudo npm install -g homebridge-http-pir-motion-sensor
-echo "[i] Contact sensor"
-sudo npm install -g homebridge-http-contact-sensor
-echo "[i] Alarm"
-sudo npm install -g homebridge-http-securitysystem
+echo "[i] Checking homebridge plugins..."
+
+if [ `npm list -g | grep -c homebridge-http-pir-motion-sensor` -eq 0 ]; then
+    echo "[i] Motion sensor"
+    sudo npm install -g homebridge-http-pir-motion-sensor
+fi
+
+if [ `npm list -g | grep -c homebridge-http-contact-sensor` -eq 0 ]; then
+    echo "[i] Contact sensor"
+    sudo npm install -g homebridge-http-contact-sensor
+fi
+
+if [ `npm list -g | grep -c homebridge-http-contact-sensor` -eq 0 ]; then
+    echo "[i] Alarm"
+    sudo npm install -g homebridge-http-securitysystem
+fi
+
 echo "[>] Done."
 
 PM_EXISTS=`which pm2`
 
-if [ ! -f ${PM_EXISTS} ]
-then
+if [ ! -d ${PM_EXISTS} ]; then
     echo "[i] Installing node process manager..."
     sudo npm install -g pm2
     echo "[>] Done."
@@ -53,8 +59,8 @@ echo "[>] Done."
 
 echo "[i] Starting services"
 pm2
-pm2 startup
+#pm2 startup
 
-pm2 start /usr/bin/homebridge -l ~/log/homebridge
-pm2 start index.js -l ~/log/server
-pm2 save
+#pm2 start /usr/bin/homebridge -l ~/log/homebridge
+#pm2 start index.js -l ~/log/server
+#pm2 save
