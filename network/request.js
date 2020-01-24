@@ -15,7 +15,12 @@ function basicRequest(method, url, headers, body, callback) {
 	}
 
 	request(options, function(err, response, body) {
-		callback(response.statusCode, response.body)
+		if(response == null) {
+			console.log(err)
+			callback(null, null)
+		} else {
+			callback(response.statusCode, response.body)
+		}
 	})
 }
 
@@ -45,6 +50,10 @@ function freeboxRequest(method, url, body, auth, requestCallback, authCallback) 
 	}
 
 	request(options, function(err, response, body) {
+		if(response == null) {
+			console.log(err)
+			callback(null, null)
+		}
 		// if the challenge has changed -> request new session token
 		// returns the new auth stuff and retry the request
 		if ((body.error_code != null && body.error_code == 'auth_required') && auth.challenge != body.result.challenge) {
