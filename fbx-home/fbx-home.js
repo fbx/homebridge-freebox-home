@@ -17,17 +17,22 @@ module.exports.getNodeList = function(filter, callback) {
 	if(auth.session) {
 		let url = 'http://mafreebox.freebox.fr/api/v6/home/nodes'
 		authRequest('GET', url, null, (statusCode, body) => {
-			if(body.success == true) {
-				let list = nodes.nodeList(body, filter)
-				local_node_list = list
-				callback(list)
+			if(body != null) {
+				if(body.success == true) {
+					let list = nodes.nodeList(body, filter)
+					local_node_list = list
+					callback(list)
+				} else {
+					console.log(body)
+					callback(null)
+				}
 			} else {
-				console.log(body)
+				console.log('[!] Unable to request home API')
 				callback(null)
 			}
 		})
 	} else {
-		console.log('No session running')
+		console.log('[>] No session running')
 		callback(null)
 	}
 }
@@ -43,11 +48,16 @@ module.exports.getNode = function(id, callback) {
 	if(auth.session) {
 		let url = 'http://mafreebox.freebox.fr/api/v6/home/nodes/'+id
 		authRequest('GET', url, null, (statusCode, body) => {
-			if(body.success == true) {
-				let node = nodes.node(body)
-				callback(node)
+			if(body != null) {
+				if(body.success == true) {
+					let node = nodes.node(body)
+					callback(node)
+				} else {
+					console.log(body)
+					callback(null)
+				}
 			} else {
-				console.log(body)
+				console.log('[!] Unable to request home API')
 				callback(null)
 			}
 		})
@@ -72,11 +82,16 @@ module.exports.nodeStatus = function(id, callback) {
 			}
 			let url = 'http://mafreebox.freebox.fr/api/v6/home/endpoints/'+id+'/'+node.statusId
 			authRequest('GET', url, null, (statusCode, body) => {
-				if(body.success == true) {
-					let status = sensors.sensorStatus(body)
-					callback(status)
+				if(body != null) {
+					if(body.success == true) {
+						let status = sensors.sensorStatus(body)
+						callback(status)
+					} else {
+						console.log(body)
+						callback(null)
+					}
 				} else {
-					console.log(body)
+					console.log('[!] Unable to request home API')
 					callback(null)
 				}
 			})
@@ -122,9 +137,14 @@ module.exports.activateMainAlarm = function(callback) {
 			}
 			local_alarm_target = 1
 			authRequest('PUT', url, data, (statusCode, body) => {
-				if(body.success == true) {
-					callback(true)
+				if(body != null) {
+					if(body.success == true) {
+						callback(true)
+					} else {
+						callback(null)
+					}
 				} else {
+					console.log('[!] Unable to request home API')
 					callback(null)
 				}
 			})
@@ -160,9 +180,14 @@ module.exports.activateSecondaryAlarm = function(callback) {
 					}
 					local_alarm_target = 2
 					authRequest('PUT', url, data, (statusCode, body) => {
-						if(body.success == true) {
-							callback(true)
+						if(body != null) {
+							if(body.success == true) {
+								callback(true)
+							} else {
+								callback(null)
+							}
 						} else {
+							console.log('[!] Unable to request home API')
 							callback(null)
 						}
 					})
@@ -189,10 +214,15 @@ module.exports.deactivateAlarm = function(callback) {
 			}
 			local_alarm_target = 0
 			authRequest('PUT', url, data, (statusCode, body) => {
-				if(body.success == true) {
-					callback(true)
+				if(body != null) {
+					if(body.success == true) {
+						callback(true)
+					} else {
+						console.log(body)
+						callback(null)
+					}
 				} else {
-					console.log(body)
+					console.log('[!] Unable to request home API')
 					callback(null)
 				}
 			})
@@ -214,10 +244,15 @@ module.exports.homeAlarm = function(callback) {
 			}
 			local_alarm_target = 3
 			authRequest('PUT', url, data, (statusCode, body) => {
-				if(body.success == true) {
-					callback(true)
+				if(body != null) {
+					if(body.success == true) {
+						callback(true)
+					} else {
+						console.log(body)
+						callback(null)
+					}
 				} else {
-					console.log(body)
+					console.log('[!] Unable to request home API')
 					callback(null)
 				}
 			})
@@ -234,10 +269,15 @@ module.exports.alarmState = function(callback) {
 			let ep_id = alarm.alarmStateId(alarm_node.data)
 			let url = 'http://mafreebox.freebox.fr/api/v6/home/endpoints/'+alarm_node.id+'/'+ep_id
 			authRequest('GET', url, null, (statusCode, body) => {
-				if(body.success == true) {
-					callback(body.result.value, local_alarm_target)
+				if(body != null) {
+					if(body.success == true) {
+						callback(body.result.value, local_alarm_target)
+					} else {
+						console.log(body)
+						callback(null)
+					}
 				} else {
-					console.log(body)
+					console.log('[!] Unable to request home API')
 					callback(null)
 				}
 			})

@@ -52,7 +52,8 @@ function freeboxRequest(method, url, body, auth, requestCallback, authCallback) 
 	request(options, function(err, response, body) {
 		if(response == null) {
 			console.log(err)
-			callback(null, null)
+			requestCallback(null, null)
+			return
 		}
 		// if the challenge has changed -> request new session token
 		// returns the new auth stuff and retry the request
