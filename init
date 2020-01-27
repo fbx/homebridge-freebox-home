@@ -68,17 +68,12 @@ pm2 start index.js # -l ~/log/server
 sleep 10
 
 # wait util the config json has been generated
-while :
+while [ ! -f ~/.homebridge/config.json ]
 do
-    sleep 5
-    if [ ! -d `~/.homebridge/config.json` ]; then
-        # then restart homebridge
-        pm2 start 0
-        break
-    fi
+  sleep 5
 done
 
-# then restart the server
+pm2 start 0
 pm2 restart 1
 
 #pm2 save
