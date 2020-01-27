@@ -15,50 +15,38 @@ if [ ! -d ${NODE_EXISTS} ]; then
     curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
     sudo apt-get --assume-yes install nodejs
     sudo apt-get --assume-yes install npm
-    sudo npm cache clean -f
-    sudo npm install -g n
-    sudo n stable
-    PATH="$PATH"
-    echo "[>] Done."
 fi
+
+echo "[i] Checking node version"
+sudo npm cache clean -f
+sudo npm install -g n
+sudo n stable
+PATH="$PATH"
+echo "[>] Done."
 
 echo "[i] Check npm version"
 sudo npm install npm@latest -g
 
-HOMEBRIDGE_EXISTS=`which homebridge`
-
-if [ ! -d ${HOMEBRIDGE_EXISTS} ]; then
-    echo "[i] Installing homebridge..."
-    sudo npm install -g --unsafe-perm homebridge
-    echo "[>] Done."
-fi
+echo "[i] Installing homebridge..."
+sudo npm install -g --unsafe-perm homebridge
+echo "[>] Done."
 
 echo "[i] Checking homebridge plugins..."
 
-if [ `npm list -g | grep -c homebridge-http-pir-motion-sensor` -eq 0 ]; then
-    echo "[i] Motion sensor"
-    sudo npm install -g homebridge-http-pir-motion-sensor
-fi
+echo "[i] Motion sensor"
+sudo npm install -g homebridge-http-pir-motion-sensor
 
-if [ `npm list -g | grep -c homebridge-http-contact-sensor` -eq 0 ]; then
-    echo "[i] Contact sensor"
-    sudo npm install -g homebridge-http-contact-sensor
-fi
+echo "[i] Contact sensor"
+sudo npm install -g homebridge-http-contact-sensor
 
-if [ `npm list -g | grep -c homebridge-http-securitysystem` -eq 0 ]; then
-    echo "[i] Alarm"
-    sudo npm install -g homebridge-http-securitysystem
-fi
+echo "[i] Alarm"
+sudo npm install -g homebridge-http-securitysystem
 
 echo "[>] Done."
 
-PM_EXISTS=`which pm2`
-
-if [ ! -d ${PM_EXISTS} ]; then
-    echo "[i] Installing node process manager..."
-    sudo npm install -g pm2
-    echo "[>] Done."
-fi
+echo "[i] Installing node process manager..."
+sudo npm install -g pm2
+echo "[>] Done."
 
 echo "[i] Installing dependancies for freebox home server"
 npm install
@@ -69,6 +57,28 @@ echo "[i] Starting services"
 pm2
 #pm2 startup
 
-pm2 start /usr/bin/homebridge # -l ~/log/homebridge
+# first, start homebridge to setup de .homebridge env
+pm2 start /usr/local/bin/homebridge # -l ~/log/homebridge
+sleep 10
+# then kill it
+pm2 stop 0
+
+# then, start the server to setup the homebridge config
 pm2 start index.js # -l ~/log/server
+sleep 10
+
+# wait util the config json has been generated
+while :
+do
+    sleep 5
+    if [ ! -d `~/.homebridge/config.json` ]; then
+        # then restart homebridge
+        pm2 start 0
+        break
+    fi
+done
+
+# then restart the server
+pm2 restart 1
+
 #pm2 save
