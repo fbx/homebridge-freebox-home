@@ -45,7 +45,7 @@ if [ `npm list -g | grep -c homebridge-http-contact-sensor` -eq 0 ]; then
     sudo npm install -g homebridge-http-contact-sensor
 fi
 
-if [ `npm list -g | grep -c homebridge-http-contact-sensor` -eq 0 ]; then
+if [ `npm list -g | grep -c homebridge-http-securitysystem` -eq 0 ]; then
     echo "[i] Alarm"
     sudo npm install -g homebridge-http-securitysystem
 fi
@@ -69,6 +69,6 @@ echo "[i] Starting services"
 pm2
 #pm2 startup
 
-#pm2 start /usr/bin/homebridge -l ~/log/homebridge
-#pm2 start index.js -l ~/log/server
+pm2 start /usr/bin/homebridge # -l ~/log/homebridge
+pm2 start index.js # -l ~/log/server
 #pm2 save
