@@ -7,7 +7,7 @@ let homebridge = require('./homebridge-config/setup')
 
 require('dotenv').config()
 
-process.title = "FBX-HOME-API"
+process.title = "FBX-HOME-SERVER"
 
 const port = 8888
 
