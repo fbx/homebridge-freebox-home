@@ -145,10 +145,10 @@ function getAccessoryOfType(type, callback) {
 function createEmptyConfigFile(dir) {
     let data = {
             "bridge": {
-                "name": "Homebridge",
+                "name": "Freebox Homebridge",
                 "username": "CC:22:3D:E3:CE:30",
                 "port": 51826,
-                "pin": "031-45-154"
+                "pin": "123-45-678"
             },
             "description": "Homebridge configuration file.",
             "ports": {
