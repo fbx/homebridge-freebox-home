@@ -12,7 +12,7 @@ NODE_EXISTS=`which curl`
 
 if [ ! -d ${NODE_EXISTS} ]; then
     echo "[i] Installing nodejs..."
-    curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
+    # curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -
     sudo apt-get --assume-yes install nodejs
     sudo apt-get --assume-yes install npm
 fi
@@ -50,7 +50,9 @@ echo "[>] Done."
 
 echo "[i] Installing dependancies for freebox home server"
 npm install
-touch .env && printf "TOKEN=null\nTRACK=null" > .env
+if [ ! -f .env ]; then
+  touch .env && printf "TOKEN=null\nTRACK=null" > .env
+fi
 echo "[>] Done."
 
 echo "[i] Starting services"
@@ -75,5 +77,6 @@ done
 
 pm2 start 0
 pm2 restart 1
+pm2 restart 0
 
 #pm2 save
