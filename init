@@ -76,6 +76,7 @@ do
 done
 
 pm2 start 0
+sleep 5
 pm2 restart 1
 pm2 restart 0
 
