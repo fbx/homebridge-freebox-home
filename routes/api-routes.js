@@ -126,8 +126,15 @@ router.post('/alarm/target', function(req, res) {
 	})
 })
 
-router.get('/homebridge/reload', function(req, res) {
+router.get('/homebridge/restart', function(req, res) {
 	homebridge.reloadHomebridge((success) => {
+		res.status(200)
+		res.send(success)
+	})
+})
+
+router.get('/homebridge/conf', function(req, res) {
+	homebridge.setupHomebridge((success) => {
 		res.status(200)
 		res.send(success)
 	})
