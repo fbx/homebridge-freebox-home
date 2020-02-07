@@ -140,6 +140,11 @@ router.get('/homebridge/conf', function(req, res) {
 	})
 })
 
+router.get('/ping', function(req, res) {
+	res.status(200)
+	res.send("OK")
+})
+
 // To notify the controller with new auth data
 function updateAuth(new_session, new_challenge, token, trackId) {
 	fbxHome.updateAuth(new_session, new_challenge, token, trackId)
