@@ -1,5 +1,6 @@
 let router = require('express').Router()
 let fbxHome = require('./../fbx-home/fbx-home')
+let homebridge = require('./../homebridge-config/setup')
 
 // List all nodes
 router.get('/node/list', function(req, res) {
@@ -122,6 +123,13 @@ router.post('/alarm/target', function(req, res) {
 			res.status(200)
 			res.send(value.toString())
 		}
+	})
+})
+
+router.get('/homebridge/reload', function(req, res) {
+	homebridge.reloadHomebridge((success) => {
+		res.status(200)
+		res.send(success)
 	})
 })
 
