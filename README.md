@@ -17,9 +17,10 @@ Simply running `./init` on your machine or server (works fine on Raspberry Pi Ze
 At the moment, only the alarm, door window and motion sensors are supported.
 
 ## The actual Freebox API
-The Freebox home api is a very complex API, with many endpoints, and many data and information. These data are supposed to be used in clients for the Home features of the Freebox Delta such as the Freebox companion mobile app, used to manage and configure every aspect of the Freebox Home Security items (camera, connect sensors, alarm...).
+The Freebox home api is a very complex API, with many endpoints, and many data and information. These data are supposed to be used in clients for the Home features of the Freebox Delta such as the Freebox companion mobile app, used to manage and configure every aspect of the Freebox Home Security items (camera, sensors, alarm...).
+
 The point of this project is to build a minimalist version of these endpoints to be able to simply communicate the states of your freebox items to other apps and services such as Homebridge.
-The main purpose was indeed to build a bridge between Homebridge and the Freebox Home API.
+The main purpose is indeed to build a bridge between Homebridge and the Freebox Home API.
 
 ## How does it looks ?
 Few endpoint are exposed in this API. The endpoits are made to be very simple explicit.
@@ -34,8 +35,9 @@ Example :
 Check the wiki for a complete documentation.
 
 ## Usage
-Just start the server with the following command :
-
+To simply start the server, use the following command :
+`npm install`
+then,
 `npm start`
 
 ## Limitations
