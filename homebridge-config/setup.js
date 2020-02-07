@@ -36,7 +36,7 @@ module.exports.reloadHomebridge = function(callback) {
         fs.readFile('/etc/.pm2/pids/homebridge-0.pid', (err, data) => {
             if (err == null) {
                 const { exec } = require("child_process");
-                let command = 'sudo kill -KILL' + data
+                let command = 'sudo kill -KILL ' + data
                 exec(command, (error, stdout, stderr) => {
                     if (error) {
                         console.log(`error: ${error.message}`)
