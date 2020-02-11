@@ -1,66 +1,80 @@
 let express = require('express')
-let fbxAuth = require('./fbx-auth/session')
-let envManager = require('./fbx-auth/env-manager')
 let apiRoutes = require('./routes/api-routes')
 
 let homebridge = require('./homebridge-config/setup')
 
+let fs = require('fs')
+
 require('dotenv').config()
 
-process.title = "FBX-HOME-SERVER"
+process.title = "homebridge-freebox-home"
 
 const port = 8888
 
-var token = process.env.TOKEN
-var trackId = process.env.TRACK
-
 let app = express()
-
+var autoAuth = checkAutoAuth(process.argv)
+setupEnvFile()
 let server = app.listen(port, function () {
 	console.log('[-] Running on port : 8888')
-	serverStart((success) => {
-		if(success) {
-			console.log('[i] Server is up and running')
-		} else {
-			console.log('[i] Unable to start server - shutting down')
-			server.close()
-		}
-	})
+	if (autoAuth) {
+		freeboxAuth((success) => {
+			if (success) {
+				startServer()
+			} else {
+				shutdown(server)
+			}
+		})
+	} else {
+		startServer()
+	}
 })
 
-const RETRY_TIMEOUT = 2000 // 2 seconds
+function startServer() {
+	app.use('/api', apiRoutes.router)
+}
 
-function serverStart(callback) {
-	console.log('[i] Start init sequece')
-	fbxAuth.fbx(token, trackId, (new_token, new_sessionToken, new_trackId, new_challenge) => {
-		if(new_token != null && new_sessionToken != null) {
-			envManager.update(new_token, new_trackId, (success) => {
-				apiRoutes.updateAuth(new_sessionToken, new_challenge, new_token, new_trackId)
-				app.use('/api', apiRoutes.router)
-				homebridge.setupHomebridge((hb_success) => {
-					if(!hb_success) {
-						console.log('[!] Unable to setup homebridge config')
-						callback(false)
-					} else {
+function shutdown(server) {
+	if (server != null) {
+		console.log('[i] Unable to pair with Freebox - shutting down')
+		server.close()
+	}
+}
+
+function freeboxAuth(callback) {
+	apiRoutes.freeboxAuthPairing((success) => {
+		if (success) {
+			homebridge.setupHomebridge((success) => {
+				if (success) {
+					homebridge.reloadHomebridge((success) => {
 						callback(true)
-					}
-				})
+					})
+				} else {
+					callback(false)
+				}
 			})
 		} else {
-			if(token != null && trackId != null) {
-				console.log('[!] Unable to authorize app with current token')
-				console.log('[!] Requesting new token...')
-				token = null
-				trackId = null
-				setTimeout(function() {
-					serverStart(callback)
-				}, RETRY_TIMEOUT)
-			} else {
-				console.log('[i] Unable to start server - trung again...')
-				setTimeout(function() {
-					serverStart(callback)
-				}, RETRY_TIMEOUT)
-			}
+			callback(false)
 		}
 	})
+}
+
+function setupEnvFile() {
+	let file = './.env'
+	fs.exists(file, function (exists) {
+		if(!exists) {
+			let data = 'TOKEN=null\nTRACK=null'
+			fs.writeFile('./.env', data, (err) => {
+				console.log("[-] Created env file")
+			})
+		}
+	})
+}
+
+function checkAutoAuth(args) {
+	for (arg of args) {
+		if (arg == 'auto-auth') {
+			return true
+		}
+	}
+	return false
 }
