@@ -66,6 +66,7 @@ function start(token, trackId, callback) {
 		}
 		if (accessGranted == 0) {
 			console.log("[i] Operation canceled after "+accessAttemptCount+" attempt, access has not been granted")
+			sessionAttemptCount = 0
 			callback(null, null)
 		}
 		if (accessGranted == 2) {
@@ -76,6 +77,7 @@ function start(token, trackId, callback) {
 					start(token, trackId, callback)
 				} else {
 					console.log("[i] Operation canceled after "+accessAttemptCount+" attempt")
+					sessionAttemptCount = 0
 					callback(null, null)
 				}
 			}, RETRY_TIMEOUT)
