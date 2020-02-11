@@ -38,8 +38,8 @@ function fbx(token, trackId, callback) {
 function auth(callback) {
 	let url = 'http://mafreebox.freebox.fr/api/v6/login/authorize/'
 	let data = {
-		"app_id":"fbx.home-api",
-		"app_name":"FBX-HomeAPI",
+		"app_id":"hb.fbx-home",
+		"app_name":"homebridge-freebox-home",
 		"app_version":"1.0",
 		"device_name":"server"
 	}
