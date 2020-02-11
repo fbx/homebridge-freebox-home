@@ -6,12 +6,35 @@
 A NodeJS gateway to interface the Freebox Home API and a Homebridge server, setting up a minimalist version of the Freebox Home APIs.
 
 ### What it does ?
-The homebridge-freebox-home, once started (`npm start`) will require access to your freebox as a regular app (you need to allow it through the screen of your Freebox Server) and will setup a homebridge configuration file with your Freebox's connected and supported devices.
+The homebridge-freebox-home, once started will require access to your freebox as a regular app (you need to allow it through the screen of your Freebox Server) and will setup a homebridge configuration file with your Freebox's connected and supported devices.
 
-### How to use it ?
+### Usage
+
 The best and simplest way to use homebridge-freebox-home will be through the `init` script.
 
 Simply running `./init` on your machine or server (works fine on Raspberry Pi Zero - also work with a Freebox VM) will automatically download homebridge plugins for supported devices and start the homebridge-freebox-home server.
+
+Or you can do it manually :
+
+**First install dependencies**
+```
+npm install
+npm run homebridge-install
+```
+**Then start the server**
+
+```
+npm run start -- auto-auth
+
+```
+
+That will automatically setup the environement, pair to the local freebox server and build the homebridge config file.
+So you might want to stay near the freebox to allow the app through the LCD screen.
+
+**Finally grant access to the server *via* Freebox OS**
+
+Go into the preference of FreeboxOS to allow the app to access you home items and camera :
+`Paramètres de la Freebox` > `Gestion des accès` and allow the `homebridge-freebox-home` app to access *Home* and *Camera* (you can disable other unused rights).
 
 ### Supported devices
 At the moment, only the alarm, door window and motion sensors are supported.
@@ -33,12 +56,6 @@ Example :
 | /api/node/list          | Will list all the nodes connected to the Freebox that are currently active.              |
 
 Check the wiki for a complete documentation.
-
-## Usage
-To simply start the server, use the following command :
-`npm install`
-then,
-`npm start`
 
 ## Limitations
 The current Freebox API do not allow the request of rights for an App.
