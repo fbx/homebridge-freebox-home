@@ -37,7 +37,7 @@ var RETRY_COUNT = 0
 //		token: "..."
 // }
 // authCallback will return the renewed auth data if renewed
-function freeboxRequest(method, url, body, auth, requestCallback, authCallback) {
+function freeboxRequest(method, url, body, auth, requestCallback, authCallback, autoRetry) {
 	//console.log('X-Fbx-App-Auth '+auth.session)
 	const options = {
 	    url: url,
@@ -70,10 +70,15 @@ function freeboxRequest(method, url, body, auth, requestCallback, authCallback) 
 			})
 		} else {
 			if(body.error_code != null && body.error_code == 'insufficient_rights') {
-				console.log('[!] Insufficient rights to request home api. Trying again...')
-				setTimeout(function() {
-					freeboxRequest(method, url, body, auth, requestCallback, authCallback)
-				}, RETRY_TIMEOUT)
+				if (autoRetry) {
+					console.log('[!] Insufficient rights to request home api. Trying again...')
+					setTimeout(function() {
+						freeboxRequest(method, url, body, auth, requestCallback, authCallback)
+					}, RETRY_TIMEOUT)
+				} else {
+					console.log('[!] Insufficient rights to request home api.')
+					requestCallback(401, null)
+				}
 			} else if(body.success == false) {
 				setTimeout(function() {
 					if(RETRY_COUNT < 3) {

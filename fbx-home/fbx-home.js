@@ -292,6 +292,17 @@ module.exports.alarmTargetState = function(callback) {
 	callback(local_alarm_target)
 }
 
+module.exports.testHomeCapabilities = function(callback) {
+	let url = 'http://mafreebox.freebox.fr/api/v6/home/nodes'
+	request.freeboxRequest('GET', url, null, auth, (statusCode, body) => {
+		if(statusCode == 401) {
+			callback(false)
+		} else {
+			callback(true)
+		}
+	}, updateAuth, false)
+}
+
 // Will be called by every auth request that will need to update auth values.
 function updateAuth(new_session, new_challenge, token, trackId) {
 	if (auth.session != new_session) {
@@ -305,7 +316,7 @@ function updateAuth(new_session, new_challenge, token, trackId) {
 
 function authRequest(method, url, body, callback) {
 	if(auth.challenge != null && auth.session != null) {
-		request.freeboxRequest(method, url, body, auth, callback, updateAuth)
+		request.freeboxRequest(method, url, body, auth, callback, updateAuth, true)
 	}
 }
 
