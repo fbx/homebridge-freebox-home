@@ -8,7 +8,7 @@ if [ ! -d ${CURL_EXISTS} ]; then
     echo "[>] Done."
 fi
 
-NODE_EXISTS=`which curl`
+NODE_EXISTS=`which node`
 
 if [ ! -d ${NODE_EXISTS} ]; then
     echo "[i] Installing nodejs..."
@@ -27,20 +27,9 @@ echo "[>] Done."
 echo "[i] Check npm version"
 sudo npm install npm@latest -g
 
-echo "[i] Installing homebridge..."
-sudo npm install -g --unsafe-perm homebridge
-echo "[>] Done."
+echo "[i] Installing homebridge and homebridge plugins..."
 
-echo "[i] Checking homebridge plugins..."
-
-echo "[i] Motion sensor"
-sudo npm install -g homebridge-http-pir-motion-sensor
-
-echo "[i] Contact sensor"
-sudo npm install -g homebridge-http-contact-sensor
-
-echo "[i] Alarm"
-sudo npm install -g homebridge-http-securitysystem
+npm run homebridge-install
 
 echo "[>] Done."
 
@@ -50,9 +39,6 @@ echo "[>] Done."
 
 echo "[i] Installing dependancies for freebox home server"
 npm install
-if [ ! -f .env ]; then
-  touch .env && printf "TOKEN=null\nTRACK=null" > .env
-fi
 echo "[>] Done."
 
 echo "[i] Starting services"
