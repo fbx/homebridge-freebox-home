@@ -46,6 +46,13 @@ router.get('/fbx/auth', function(req, res) {
 	})
 })
 
+router.get('/fbx/rights', function(req, res) {
+	fbxHome.testHomeCapabilities((success) => {
+		res.status(200)
+		res.send(success)
+	})
+})
+
 router.get('/homebridge/restart', function(req, res) {
 	homebridge.reloadHomebridge((success) => {
 		res.status(200)
