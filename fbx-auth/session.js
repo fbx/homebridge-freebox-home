@@ -119,7 +119,7 @@ function session(token, challenge, callback) {
 			"X-Fbx-App-Auth": token
 		}
 		let data = {
-			"app_id": "fbx.home-api",
+			"app_id": "hb.fbx-home",
 			"app_version": "1.0",
 			"password": password
 		}
