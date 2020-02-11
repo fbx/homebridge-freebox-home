@@ -1,6 +1,64 @@
 let router = require('express').Router()
 let fbxHome = require('./../fbx-home/fbx-home')
+let fbxAuth = require('./../fbx-auth/session')
+let envManager = require('./../fbx-auth/env-manager')
 let homebridge = require('./../homebridge-config/setup')
+
+const RETRY_TIMEOUT = 2000 // 2 seconds
+
+
+require('dotenv').config()
+
+var token = process.env.TOKEN
+var trackId = process.env.TRACK
+
+function freeboxAuthPairing(callback) {
+	console.log('[i] Start init sequece')
+	fbxAuth.fbx(token, trackId, (new_token, new_sessionToken, new_trackId, new_challenge) => {
+		if(new_token != null && new_sessionToken != null) {
+			envManager.update(new_token, new_trackId, (success) => {
+				updateAuth(new_sessionToken, new_challenge, new_token, new_trackId)
+				callback(success)
+			})
+		} else {
+			if(token != null && trackId != null) {
+				console.log('[!] Unable to authorize app with current token')
+				console.log('[!] Requesting new token...')
+				token = null
+				trackId = null
+				setTimeout(function() {
+					freeboxAuthPairing(callback)
+				}, RETRY_TIMEOUT)
+			} else {
+				console.log('[i] Unable to start server - trung again...')
+				setTimeout(function() {
+					freeboxAuthPairing(callback)
+				}, RETRY_TIMEOUT)
+			}
+		}
+	})
+}
+
+router.get('/fbx/auth', function(req, res) {
+	freeboxAuthPairing((success) => {
+		res.status(200)
+		res.send(success)
+	})
+})
+
+router.get('/homebridge/restart', function(req, res) {
+	homebridge.reloadHomebridge((success) => {
+		res.status(200)
+		res.send(success)
+	})
+})
+
+router.get('/homebridge/conf', function(req, res) {
+	homebridge.setupHomebridge((success) => {
+		res.status(200)
+		res.send(success)
+	})
+})
 
 // List all nodes
 router.get('/node/list', function(req, res) {
@@ -126,20 +184,6 @@ router.post('/alarm/target', function(req, res) {
 	})
 })
 
-router.get('/homebridge/restart', function(req, res) {
-	homebridge.reloadHomebridge((success) => {
-		res.status(200)
-		res.send(success)
-	})
-})
-
-router.get('/homebridge/conf', function(req, res) {
-	homebridge.setupHomebridge((success) => {
-		res.status(200)
-		res.send(success)
-	})
-})
-
 router.get('/ping', function(req, res) {
 	res.status(200)
 	res.send("OK")
@@ -152,3 +196,4 @@ function updateAuth(new_session, new_challenge, token, trackId) {
 
 module.exports.router = router
 module.exports.updateAuth = updateAuth
+module.exports.freeboxAuthPairing = freeboxAuthPairing
