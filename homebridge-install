@@ -1,0 +1,4 @@
+sudo npm install -g --unsafe-perm homebridge
+sudo npm install -g homebridge-http-pir-motion-sensor
+sudo npm install -g homebridge-http-contact-sensor
+sudo npm install -g homebridge-http-securitysystem
