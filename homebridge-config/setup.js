@@ -148,7 +148,7 @@ function isIterable(obj) {
 
 function getAccessoryOfType(type, callback) {
     fbxHome.getNodeList(type, (list) => {
-        if(isIterable(list)) {
+        if(list != null && isIterable(list)) {
             var accessories = []
             for(node of list) {
                 if(type == 'alarm') {
@@ -160,7 +160,7 @@ function getAccessoryOfType(type, callback) {
             callback(accessories)
         } else {
             setTimeout(function() {
-				DWSItems(callback)
+                getAccessoryOfType(type, callback)
 			}, RETRY_TIMEOUT)
         }
     })
