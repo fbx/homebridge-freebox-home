@@ -11,6 +11,7 @@ require('dotenv').config()
 
 var token = process.env.TOKEN
 var trackId = process.env.TRACK
+var camEnabled = false
 
 function freeboxAuthPairing(callback) {
 	console.log('[i] Start init sequece')
@@ -61,6 +62,7 @@ router.get('/homebridge/restart', function(req, res) {
 })
 
 router.get('/homebridge/conf', function(req, res) {
+	homebridge.camEnabled = camEnabled
 	homebridge.setupHomebridge((success) => {
 		res.status(200)
 		res.send(success)

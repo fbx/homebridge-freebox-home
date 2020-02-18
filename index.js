@@ -31,6 +31,7 @@ let server = app.listen(port, function () {
 
 function startServer() {
 	app.use('/api', apiRoutes.router)
+	apiRoutes.camEnabled = checkCamEnabled(process.argv)
 }
 
 function shutdown(server) {
@@ -73,6 +74,15 @@ function setupEnvFile() {
 function checkAutoAuth(args) {
 	for (arg of args) {
 		if (arg == 'auto-auth') {
+			return true
+		}
+	}
+	return false
+}
+
+function checkCamEnabled(args) {
+	for (arg of args) {
+		if (arg == 'cam') {
 			return true
 		}
 	}

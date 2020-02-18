@@ -1,7 +1,10 @@
 let fbxHome = require('../fbx-home/fbx-home')
 let fs = require('fs')
+let request = require('request')
 
 const RETRY_TIMEOUT = 2000 // 2 seconds
+
+var camEnabled = false
 
 module.exports.setupHomebridge = function(callback) {
     const homedir = require('os').homedir()
@@ -15,18 +18,38 @@ module.exports.setupHomebridge = function(callback) {
         }
         let config = JSON.parse(data)
 
-        getAccessories((list) => {
+        getAccessories((accessories) => {
             config.accessories = []
-            for(accessory of list) {
+            for(accessory of accessories) {
                 config.accessories.push(accessory)
             }
-            fs.writeFile(file, JSON.stringify(config), (err) => {
-                if (err) {
-                    console.log(err)
+            getPlatforms((cameras) => {
+                config.platforms = []
+                for(camera of cameras) {
+                    config.platforms.push(camera)
                 }
-                callback(true)
-            });
+                fs.writeFile(file, JSON.stringify(config), (err) => {
+                    if (err) {
+                        console.log(err)
+                    }
+                    callback(true)
+                })
+            })
         })
+    })
+}
+
+function activateRTSP(cameraIndex, cameraList) {
+    let cam = cameraList[cameraIndex]
+    console.log('Activating rtsp for camera '+cam.ip)
+    request('http://'+cam.login+':'+cam.password+'@'+cam.ip+'/adm/set_group.cgi?group=H264&sp_uri=rocket', function (error, response, body) {
+        console.log(body)
+        if(body == 'OK') {
+            if(cameraList.length < cameraIndex) {
+                let nextIndex = cameraIndex + 1
+                activateRTSP(nextIndex, cameraList)
+            }
+        }
     })
 }
 
@@ -51,6 +74,8 @@ module.exports.reloadHomebridge = function(callback) {
                 })
             }
         })
+    } else {
+        callback(false)
     }
 }
 
@@ -93,6 +118,52 @@ function buildSensorAccessory(node) {
         name: node.label,
         pollInterval: 500,
         statusUrl: 'http://localhost:8888/api/node/'+node.id
+    }
+}
+
+function getPlatforms(callback) {
+    var platforms = []
+    var cams = []
+    cameraItems((cameras) => {
+        for (camera of cameras) {
+            if (camera.data.props.Ip != '0.0.0.0') {
+                platforms.push(buildCameraPlateform(camera))
+                cams.push({
+                    ip: camera.data.props.Ip,
+                    login: camera.data.props.Login,
+                    password: camera.data.props.Pass
+                })
+            }
+        }
+        if(camEnabled) {
+            activateRTSP(0, cams)
+            callback(platforms)
+        } else {
+            callback([])
+        }
+    })
+}
+
+function cameraItems(callback) {
+    fbxHome.getNodeList('camera', (list) => {
+        callback(list)
+    })
+}
+
+function buildCameraPlateform(node) {
+    return {
+        "name": node.data.label,
+        "videoConfig": {
+            "source": '-re -i rtsp://'+node.data.props.Ip+'/rocket',
+            "maxStreams": 2,
+            "maxWidth": 1280,
+            "maxHeight": 720,
+            "maxFPS": 10,
+            "maxBitrate": 300,
+            "packetSize": 1316,
+            "audio": true,
+            "debug": true
+        }
     }
 }
 

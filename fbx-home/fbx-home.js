@@ -307,11 +307,11 @@ module.exports.testHomeCapabilities = function(callback) {
 function updateAuth(new_session, new_challenge, token, trackId) {
 	if (auth.session != new_session) {
 		console.log("[-] renewed session  : "+new_session)
-		auth.session = new_session
-		auth.challenge = new_challenge
-		auth.token = token
-		auth.trackId = trackId
 	}
+	auth.session = new_session
+	auth.challenge = new_challenge
+	auth.token = token
+	auth.trackId = trackId
 }
 
 function authRequest(method, url, body, callback) {
