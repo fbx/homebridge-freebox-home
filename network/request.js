@@ -38,7 +38,9 @@ var RETRY_COUNT = 0
 // }
 // authCallback will return the renewed auth data if renewed
 function freeboxRequest(method, url, body, auth, requestCallback, authCallback, autoRetry) {
-	//console.log('X-Fbx-App-Auth '+auth.session)
+	// console.log('url '+url)
+	// console.log('meth '+method)
+	// console.log('session '+auth.session)
 	const options = {
 	    url: url,
 	    method: method,
@@ -58,11 +60,17 @@ function freeboxRequest(method, url, body, auth, requestCallback, authCallback, 
 		// if the challenge has changed -> request new session token
 		// returns the new auth stuff and retry the request
 		if ((body.error_code != null && body.error_code == 'auth_required') && auth.challenge != body.result.challenge) {
+			console.log('> auth required')
 			fbxAuth.session(auth.token, body.result.challenge, (new_sessionToken) => {
+				if(new_sessionToken == null) {
+					console.log('> new_sessionToken is null')
+					requestCallback(401, null)
+					return
+				}
 				authCallback(new_sessionToken, body.result.challenge)
 				let new_auth = {
 					challenge: body.result.challenge,
-					sessionToken: new_sessionToken,
+					session: new_sessionToken,
 					token: auth.token,
 					trackId: auth.trackId
 				}
@@ -71,7 +79,7 @@ function freeboxRequest(method, url, body, auth, requestCallback, authCallback, 
 		} else {
 			if(body.error_code != null && body.error_code == 'insufficient_rights') {
 				if (autoRetry) {
-					console.log('[!] Insufficient rights to request home api. Trying again...')
+					console.log('[!] Insufficient rights to request home api ('+body.missing_right+'). Trying again...')
 					setTimeout(function() {
 						freeboxRequest(method, url, body, auth, requestCallback, authCallback)
 					}, RETRY_TIMEOUT)
@@ -85,7 +93,7 @@ function freeboxRequest(method, url, body, auth, requestCallback, authCallback, 
 						freeboxRequest(method, url, body, auth, requestCallback, authCallback)
 						RETRY_COUNT++
 					} else {
-						requestCallback(response.statusCode, body)
+						requestCallback(401, null)
 						RETRY_COUNT = 0
 						return
 					}
