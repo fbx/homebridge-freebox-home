@@ -13,10 +13,11 @@ const port = 8888
 
 let app = express()
 var autoAuth = checkAutoAuth(process.argv)
-setupEnvFile()
+let created = createEnvFile()
 let server = app.listen(port, function () {
 	console.log('[-] Running on port : 8888')
-	if (autoAuth) {
+	// if auto auth is enabled or a env file is present
+	if (autoAuth || !created) {
 		freeboxAuth((success) => {
 			if (success) {
 				startServer()
@@ -59,7 +60,7 @@ function freeboxAuth(callback) {
 	})
 }
 
-function setupEnvFile() {
+function createEnvFile() {
 	let file = './.env'
 	fs.exists(file, function (exists) {
 		if(!exists) {
@@ -67,7 +68,9 @@ function setupEnvFile() {
 			fs.writeFile('./.env', data, (err) => {
 				console.log("[-] Created env file")
 			})
+			return true
 		}
+		return false
 	})
 }
 
