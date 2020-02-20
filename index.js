@@ -17,8 +17,9 @@ let created = createEnvFile()
 let server = app.listen(port, function () {
 	console.log('[-] Running on port : 8888')
 	// if auto auth is enabled or a env file is present
-	if (autoAuth || !created) {
+	if (autoAuth || (created == false)) {
 		freeboxAuth((success) => {
+			console.log('> retreiving tokens')
 			if (success) {
 				startServer()
 			} else {
@@ -62,16 +63,17 @@ function freeboxAuth(callback) {
 
 function createEnvFile() {
 	let file = './.env'
-	fs.exists(file, function (exists) {
-		if(!exists) {
-			let data = 'TOKEN=null\nTRACK=null'
-			fs.writeFile('./.env', data, (err) => {
-				console.log("[-] Created env file")
-			})
-			return true
-		}
+	if(!fs.existsSync(file)) {
+		console.log('> file created')
+		let data = 'TOKEN=null\nTRACK=null'
+		fs.writeFile('./.env', data, (err) => {
+			console.log("[-] Created env file")
+		})
+		return true
+	} else {
+		console.log('> file already present')
 		return false
-	})
+	}
 }
 
 function checkAutoAuth(args) {
