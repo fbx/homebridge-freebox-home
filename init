@@ -1,5 +1,7 @@
 #!/bin/bash
 
+git pull
+
 CURL_EXISTS=`which curl`
 
 if [ ! -d ${CURL_EXISTS} ]; then
