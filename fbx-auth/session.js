@@ -16,9 +16,15 @@ function fbx(token, trackId, callback) {
 		auth((new_token, new_trackId) => {
 			if(new_token != null && new_trackId != null) {
 				start(new_token, new_trackId, (challenge, sessionToken) => {
-					callback(new_token, sessionToken, new_trackId, challenge)
+					if (challenge != null || sessionToken != null) {
+						callback(new_token, sessionToken, new_trackId, challenge)	
+					} else {
+						console.log('>>> challenge or session is null')
+						callback(null, null, null, null)
+					}
 				})
 			} else {
+				console.log('>>> token or trackid is null')
 				callback(null, null, null, null)
 			}
 		})
@@ -28,6 +34,7 @@ function fbx(token, trackId, callback) {
 			if(challenge != null && sessionToken != null) {
 				callback(token, sessionToken, trackId, challenge)
 			} else {
+				console.log('>>> challenge or session is null, with existing track/token')
 				callback(null, null, null, null)
 			}
 		})
@@ -60,9 +67,16 @@ function start(token, trackId, callback) {
 	grantAccess(trackId, (accessGranted, challenge) => {
 		if (accessGranted == 1) {
 			accessAttemptCount = 0
-			session(token, challenge, (sessionToken) => {
-				callback(challenge, sessionToken)
-			})
+			if (token != null || challenge != null) {
+				session(token, challenge, (sessionToken) => {
+					callback(challenge, sessionToken)
+				})
+			} else {
+				setTimeout(function() {
+					console.log('>>> challenge or token is null')
+					start(token, trackId, callback)
+				}, RETRY_TIMEOUT)
+			}
 		}
 		if (accessGranted == 0) {
 			console.log("[i] Operation canceled after "+accessAttemptCount+" attempt, access has not been granted")
