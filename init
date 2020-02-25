@@ -45,7 +45,7 @@ echo "[>] Done."
 
 echo "[i] Starting services"
 pm2
-#pm2 startup
+pm2 startup
 # first, start homebridge to setup the .homebridge env
 pm2 start /usr/local/bin/homebridge # -l ~/log/homebridge
 sleep 10
@@ -54,4 +54,4 @@ pm2 stop 0
 # then, start the server
 pm2 start index.js # -l ~/log/server
 pm2 start 0
-#pm2 save
+pm2 save
