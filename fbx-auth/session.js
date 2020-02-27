@@ -19,12 +19,12 @@ function fbx(token, trackId, callback) {
 					if (challenge != null || sessionToken != null) {
 						callback(new_token, sessionToken, new_trackId, challenge)	
 					} else {
-						console.log('>>> challenge or session is null')
+						console.log('[!] Challenge or session is null')
 						callback(null, null, null, null)
 					}
 				})
 			} else {
-				console.log('>>> token or trackid is null')
+				console.log('[!] Token or trackid is null')
 				callback(null, null, null, null)
 			}
 		})
@@ -34,7 +34,7 @@ function fbx(token, trackId, callback) {
 			if(challenge != null && sessionToken != null) {
 				callback(token, sessionToken, trackId, challenge)
 			} else {
-				console.log('>>> challenge or session is null, with existing track/token')
+				console.log('[!] Challenge or session is null, with existing track/token')
 				callback(null, null, null, null)
 			}
 		})
@@ -73,7 +73,7 @@ function start(token, trackId, callback) {
 				})
 			} else {
 				setTimeout(function() {
-					console.log('>>> challenge or token is null')
+					console.log('[!] Challenge or token is null')
 					start(token, trackId, callback)
 				}, RETRY_TIMEOUT)
 			}

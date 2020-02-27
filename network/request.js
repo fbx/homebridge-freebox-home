@@ -41,6 +41,11 @@ function freeboxRequest(method, url, body, auth, requestCallback, authCallback, 
 	// console.log('url '+url)
 	// console.log('meth '+method)
 	// console.log('session '+auth.session)
+	if (auth.token == null) {
+		console.log('[!] Operation requested with null token')
+		requestCallback(null, null)
+		return
+	}
 	const options = {
 	    url: url,
 	    method: method,
@@ -60,12 +65,20 @@ function freeboxRequest(method, url, body, auth, requestCallback, authCallback, 
 		// if the challenge has changed -> request new session token
 		// returns the new auth stuff and retry the request
 		if ((body.error_code != null && body.error_code == 'auth_required') && auth.challenge != body.result.challenge) {
-			console.log('> auth required')
+			console.log('[i] Fbx authed operation requested without credentials')
 			fbxAuth.session(auth.token, body.result.challenge, (new_sessionToken) => {
 				if(new_sessionToken == null) {
-					console.log('> new_sessionToken is null')
-					requestCallback(401, null)
-					return
+					if (autoRetry) {
+						console.log('[!] Freebox OS returned a null sessionToken. Trying again...')
+						setTimeout(function() {
+							freeboxRequest(method, url, body, auth, requestCallback, authCallback)
+						}, RETRY_TIMEOUT)
+						return
+					} else {
+						console.log('[!] Freebox OS returned null sessionToken.')
+						requestCallback(401, null)
+						return
+					}
 				}
 				authCallback(new_sessionToken, body.result.challenge)
 				let new_auth = {

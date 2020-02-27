@@ -305,6 +305,10 @@ module.exports.testHomeCapabilities = function(callback) {
 
 // Will be called by every auth request that will need to update auth values.
 function updateAuth(new_session, new_challenge, token, trackId) {
+	if (token == null) {
+		console.log('[!] Credentials trying updating with a null token')
+		return
+	}
 	if (auth.session != new_session) {
 		console.log("[-] renewed session  : "+new_session)
 	}
@@ -315,7 +319,7 @@ function updateAuth(new_session, new_challenge, token, trackId) {
 }
 
 function authRequest(method, url, body, callback) {
-	if(auth.challenge != null && auth.session != null) {
+	if(auth.challenge != null && auth.session != null && auth.token != null) {
 		request.freeboxRequest(method, url, body, auth, callback, updateAuth, true)
 	}
 }
