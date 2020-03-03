@@ -271,6 +271,9 @@ module.exports.alarmState = function(callback) {
 			authRequest('GET', url, null, (statusCode, body) => {
 				if(body != null) {
 					if(body.success == true) {
+						if (body.result.value == 'alert') {
+							local_alarm_target = 0
+						}
 						callback(body.result.value, local_alarm_target)
 					} else {
 						console.log(body)

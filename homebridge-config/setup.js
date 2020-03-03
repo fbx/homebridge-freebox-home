@@ -199,7 +199,7 @@ function buildAlarmAccessory(node) {
                 "body": null
             },
             "readTargetState": {
-                "url": "http://localhost:8888/api/alarm/state",
+                "url": "http://localhost:8888/api/alarm/target",
                 "body": null,
                 "headers": {
                     "Content-Type": "text/html"

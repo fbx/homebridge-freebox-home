@@ -173,22 +173,22 @@ router.post('/alarm/state', function(req, res) {
 router.post('/alarm/target', function(req, res) {
 	fbxHome.alarmTargetState((state) => {
 		if(state == null) {
-			res.status(400)
-			res.send(null)
+				res.status(400)
+				res.send(null)
 		} else {
-			var value = 0
-			switch(state) {
-				case 0:
-					value = 3
-				case 1:
-					value = 1
-				case 2:
-					value = 2
-				case 3:
-					value = 0
-			}
-			res.status(200)
-			res.send(value.toString())
+				var value = 0
+				switch(state) {
+						case 0:
+								value = 3
+						case 1:
+								value = 1
+						case 2:
+								value = 2
+						case 3:
+								value = 0
+				}
+				res.status(200)
+				res.send(value.toString())
 		}
 	})
 })
