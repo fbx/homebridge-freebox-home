@@ -13,6 +13,40 @@ var auth = {
 var local_node_list = null
 var local_alarm_target = 0
 
+updateAlarmTarget()
+
+function updateAlarmTarget() {
+	if(auth.session) {
+		this.getAlarm((alarm_node) => {
+			let ep_id = alarm.alarmStateId(alarm_node.data)
+			let url = 'http://mafreebox.freebox.fr/api/v6/home/endpoints/'+alarm_node.id+'/'+ep_id
+			authRequest('GET', url, null, (statusCode, body) => {
+				if(body != null) {
+					if(body.success == true) {
+						switch(body.result.value) {
+							case 'idle':
+								local_alarm_target = 0
+								break
+							case 'alarm1_armed':
+								local_alarm_target = 1
+								break
+							case 'alarm2_armed':
+								local_alarm_target = 2
+								break
+							default:
+								local_alarm_target = 0
+								break
+						}
+					}
+				}
+				setTimeout(function() {
+					updateAlarmTarget()
+				}, 10000)
+			})
+		})
+	}
+}
+
 module.exports.getNodeList = function(filter, callback) {
 	if(auth.session) {
 		let url = 'http://mafreebox.freebox.fr/api/v6/home/nodes'
