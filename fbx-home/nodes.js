@@ -15,7 +15,7 @@ module.exports.nodeList = function(object, filter) {
 			let item = {
 				id: node.id,
 				type: node.category,
-				label: node.label,
+				label: getObjectLabel(node, items),
 				statusId: endpointForStatus,
 				data: node
 			}
@@ -31,6 +31,27 @@ module.exports.nodeList = function(object, filter) {
 	} else {
 		return null
 	}
+}
+
+function getObjectLabel(object, objects) {
+	var label = object.label
+	if (objectLabelIsDuplicated(object.label, object.id, objects)) {
+		let index = 2
+		label = object.label + ' ' + index
+		while (objectLabelIsDuplicated(label, object.id, objects)) {
+			label = object.label + ' ' + (index + 1)
+		}
+	}
+	return label
+}
+
+function objectLabelIsDuplicated(label, id, objects) {
+	for (object of objects) {
+		if ((label == object.label) && (id != object.id)) {
+			return true
+		}
+	}
+	return false
 }
 
 module.exports.node = function(object) {
