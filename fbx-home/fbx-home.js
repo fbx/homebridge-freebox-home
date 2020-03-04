@@ -80,8 +80,20 @@ module.exports.getNode = function(id, callback) {
 		}
 	}
 	if(auth.session) {
-		this.getNodeList(null, (list) => {
-			this.getNode(id, callback)
+		let url = 'http://mafreebox.freebox.fr/api/v6/home/nodes/'+id
+		authRequest('GET', url, null, (statusCode, body) => {
+			if(body != null) {
+				if(body.success == true) {
+					let node = nodes.node(body)
+					callback(node)
+				} else {
+					console.log(body)
+					callback(null)
+				}
+			} else {
+				console.log('[!] Unable to request home API')
+				callback(null)
+			}
 		})
 	} else {
 		console.log('No session running')
