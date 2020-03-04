@@ -132,7 +132,7 @@ module.exports.getAlarm = function(callback) {
 		}
 		if(alarm_node == null) {
 			this.getNodeList("alarm", (list) => {
-				if(list.length > 0) {
+				if(list != null && list.length > 0) {
 					callback(list[0])
 				} else {
 					callback(null)
