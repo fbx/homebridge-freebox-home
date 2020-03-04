@@ -116,7 +116,7 @@ function buildSensorAccessory(node) {
     return {
         accessory: type,
         name: node.label,
-        pollInterval: 500,
+        pollInterval: Math.floor(Math.random() * (1500 - 500 + 1) + 500),
         statusUrl: 'http://localhost:8888/api/node/'+node.id
     }
 }
