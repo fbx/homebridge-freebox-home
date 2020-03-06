@@ -69,6 +69,13 @@ router.get('/homebridge/conf', function(req, res) {
 	})
 })
 
+router.get('/homebridge/clean', function(req, res) {
+	homebridge.cleanHomebridge((success) => {
+		res.status(200)
+		res.send(success)
+	})
+})
+
 // List all nodes
 router.get('/node/list', function(req, res) {
 	fbxHome.getNodeList(null, (list) => {
