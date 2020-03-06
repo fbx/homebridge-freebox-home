@@ -254,11 +254,28 @@ function getAccessoryOfType(type, callback) {
     })
 }
 
+function randomHex(len) {
+    var maxlen = 8,
+        min = Math.pow(16,Math.min(len,maxlen)-1) 
+        max = Math.pow(16,Math.min(len,maxlen)) - 1,
+        n = Math.floor(Math.random() * (max-min+1)) + min,
+        r = n.toString(16);
+    while (r.length < len) {
+       r = r + randHex(len - maxlen)
+    }
+    return r
+}
+
 function createEmptyConfigFile(dir) {
+    var mac = randomHex(2)
+    for (var j = 1;j<6;j++) {
+        mac = mac + ':' + randomHex(2);
+    }
+    mac = mac.toUpperCase()
     let data = {
             "bridge": {
                 "name": "Freebox Homebridge",
-                "username": "CC:22:3D:E3:CE:30",
+                "username": "CC:22:3D:E3:CE:32",
                 "port": 51826,
                 "pin": "123-45-678"
             },
