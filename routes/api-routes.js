@@ -86,24 +86,34 @@ router.get('/homebridge/clean', function(req, res) {
 
 // List all nodes
 router.get('/node/list', function(req, res) {
-	fbxHome.getNodeList(null, (list) => {
-		res.status(200)
-		res.json(list)
-	})
+	if (req.headers.host == 'localhost:8888') {
+		fbxHome.getNodeList(null, (list) => {
+			res.status(200)
+			res.json(list)
+		})
+	} else {
+		res.status(401)
+		res.send('unauthorized')
+	}
 })
 
 // Get the status of a given node (by id)
 router.get('/node/:id', function(req, res) {
-	let nodeId = parseInt(req.params.id, 10)
-	fbxHome.nodeStatus(nodeId, (status) => {
-		if(status != null) {
-			res.status(200)
-			res.send(status.toString())
-		} else {
-			res.status(400)
-			res.send(null)
-		}
-	})
+	if (req.headers.host == 'localhost:8888') {
+		let nodeId = parseInt(req.params.id, 10)
+		fbxHome.nodeStatus(nodeId, (status) => {
+			if(status != null) {
+				res.status(200)
+				res.send(status.toString())
+			} else {
+				res.status(400)
+				res.send(null)
+			}
+		})
+	} else {
+		res.status(401)
+		res.send('unauthorized')
+	}
 })
 
 // Get all the contact sensors ids
