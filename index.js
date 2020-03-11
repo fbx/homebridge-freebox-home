@@ -46,7 +46,7 @@ function shutdown(server) {
 function freeboxAuth(callback) {
 	apiRoutes.freeboxAuthPairing((success) => {
 		if (success) {
-			homebridge.setupHomebridge((success) => {
+			homebridge.setupHomebridge(false, (success) => {
 				if (success) {
 					homebridge.reloadHomebridge((success) => {
 						callback(true)
