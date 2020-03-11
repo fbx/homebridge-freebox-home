@@ -63,7 +63,15 @@ router.get('/homebridge/restart', function(req, res) {
 
 router.get('/homebridge/conf', function(req, res) {
 	homebridge.camEnabled = camEnabled
-	homebridge.setupHomebridge((success) => {
+	homebridge.setupHomebridge(false, (success) => {
+		res.status(200)
+		res.send(success)
+	})
+})
+
+router.get('/homebridge/conf/alarm', function(req, res) {
+	homebridge.camEnabled = camEnabled
+	homebridge.setupHomebridge(true, (success) => {
 		res.status(200)
 		res.send(success)
 	})

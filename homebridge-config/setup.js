@@ -6,7 +6,7 @@ const RETRY_TIMEOUT = 2000 // 2 seconds
 
 var camEnabled = false
 
-module.exports.setupHomebridge = function(callback) {
+module.exports.setupHomebridge = function(includeAlarm, callback) {
     const homedir = require('os').homedir()
     let file = homedir+'/.homebridge/config.json'
     if(!fs.existsSync(file)) {
@@ -18,7 +18,7 @@ module.exports.setupHomebridge = function(callback) {
         }
         let config = JSON.parse(data)
 
-        getAccessories((accessories) => {
+        getAccessories(includeAlarm, (accessories) => {
             config.accessories = []
             for(accessory of accessories) {
                 config.accessories.push(accessory)
@@ -96,13 +96,15 @@ module.exports.reloadHomebridge = function(callback) {
     }
 }
 
-function getAccessories(callback) {
+function getAccessories(includeAlarm, callback) {
     var accessories = []
     DWSItems((dwss) => {
         PIRItems((pirs) => {
             AlarmItems((alarms) => {
                 for(alarm of alarms) {
-                    accessories.push(alarm)
+                    if (includeAlarm) {
+                        accessories.push(alarm)
+                    }
                 }
                 for(dws of dwss) {
                     accessories.push(dws)
