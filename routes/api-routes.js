@@ -86,38 +86,43 @@ router.get('/homebridge/clean', function(req, res) {
 
 // List all nodes
 router.get('/node/list', function(req, res) {
-	if (req.headers.host == 'localhost:8888') {
-		fbxHome.getNodeList(null, (list) => {
-			res.status(200)
-			res.json(list)
-		})
-	} else {
+	if (req.headers.host != 'localhost:8888') {
 		res.status(401)
 		res.send('unauthorized')
+		return
 	}
+	fbxHome.getNodeList(null, (list) => {
+		res.status(200)
+		res.json(list)
+	})
 })
 
 // Get the status of a given node (by id)
 router.get('/node/:id', function(req, res) {
-	if (req.headers.host == 'localhost:8888') {
-		let nodeId = parseInt(req.params.id, 10)
-		fbxHome.nodeStatus(nodeId, (status) => {
-			if(status != null) {
-				res.status(200)
-				res.send(status.toString())
-			} else {
-				res.status(400)
-				res.send(null)
-			}
-		})
-	} else {
+	if (req.headers.host != 'localhost:8888') {
 		res.status(401)
 		res.send('unauthorized')
+		return
 	}
+	let nodeId = parseInt(req.params.id, 10)
+	fbxHome.nodeStatus(nodeId, (status) => {
+		if(status != null) {
+			res.status(200)
+			res.send(status.toString())
+		} else {
+			res.status(400)
+			res.send(null)
+		}
+	})
 })
 
 // Get all the contact sensors ids
 router.get('/node/list/contactSensor', function(req, res) {
+	if (req.headers.host != 'localhost:8888') {
+		res.status(401)
+		res.send('unauthorized')
+		return
+	}
 	fbxHome.getNodeList("dws", (list) => {
 		res.status(200)
 		res.json(list)
@@ -126,6 +131,11 @@ router.get('/node/list/contactSensor', function(req, res) {
 
 // Get all the motion sensors ids
 router.get('/node/list/motionSensor', function(req, res) {
+	if (req.headers.host != 'localhost:8888') {
+		res.status(401)
+		res.send('unauthorized')
+		return
+	}
 	fbxHome.getNodeList("pir", (list) => {
 		res.status(200)
 		res.json(list)
@@ -134,6 +144,11 @@ router.get('/node/list/motionSensor', function(req, res) {
 
 // Activate the main alarm
 router.post('/alarm/main', function(req, res) {
+	if (req.headers.host != 'localhost:8888') {
+		res.status(401)
+		res.send('unauthorized')
+		return
+	}
 	fbxHome.activateMainAlarm((success) => {
 		res.status(success ? 200 : 400)
 		res.send(null)
@@ -142,6 +157,11 @@ router.post('/alarm/main', function(req, res) {
 
 // Activate the secondary alarm
 router.post('/alarm/secondary', function(req, res) {
+	if (req.headers.host != 'localhost:8888') {
+		res.status(401)
+		res.send('unauthorized')
+		return
+	}
 	fbxHome.activateSecondaryAlarm((success) => {
 		res.status(success ? 200 : 400)
 		res.send(null)
@@ -150,6 +170,11 @@ router.post('/alarm/secondary', function(req, res) {
 
 // Dectivate all alarms
 router.post('/alarm/off', function(req, res) {
+	if (req.headers.host != 'localhost:8888') {
+		res.status(401)
+		res.send('unauthorized')
+		return
+	}
 	fbxHome.deactivateAlarm((success) => {
 		res.status(success ? 200 : 400)
 		res.send(null)
@@ -158,6 +183,11 @@ router.post('/alarm/off', function(req, res) {
 
 // Dectivate all alarms as well
 router.post('/alarm/home', function(req, res) {
+	if (req.headers.host != 'localhost:8888') {
+		res.status(401)
+		res.send('unauthorized')
+		return
+	}
 	fbxHome.homeAlarm((success) => {
 		res.status(success ? 200 : 400)
 		res.send(null)
@@ -166,6 +196,11 @@ router.post('/alarm/home', function(req, res) {
 
 // Get the state of the alarm
 router.post('/alarm/state', function(req, res) {
+	if (req.headers.host != 'localhost:8888') {
+		res.status(401)
+		res.send('unauthorized')
+		return
+	}
 	fbxHome.alarmState((state, target) => {
 		var value = null
 		switch(state) {
@@ -196,6 +231,11 @@ router.post('/alarm/state', function(req, res) {
 
 // Get the target state of the alarm
 router.post('/alarm/target', function(req, res) {
+	if (req.headers.host != 'localhost:8888') {
+		res.status(401)
+		res.send('unauthorized')
+		return
+	}
 	fbxHome.alarmTargetState((state) => {
 		if(state == null) {
 				res.status(400)
