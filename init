@@ -18,7 +18,6 @@ if [ -d ${NODE_EXISTS} ]; then
     sudo apt-get --assume-yes install npm
 fi
 
-
 if [ ! -d /usr/local/lib/node_modules/n ]; then
     echo "[i] Checking node version"
     sudo npm cache clean -f
@@ -32,18 +31,15 @@ echo "[i] Check npm version"
 sudo npm install npm@latest -g
 
 echo "[i] Installing homebridge and homebridge plugins..."
-
 npm run homebridge-install
 
-echo "[>] Done."
-
-echo "[i] Installing node process manager..."
-sudo npm install -g pm2
-echo "[>] Done."
+if [ ! -d /usr/local/lib/node_modules/pm2 ]; then
+    echo "[i] Installing node process manager..."
+    sudo npm install -g pm2
+fi
 
 echo "[i] Installing dependancies for freebox home server"
 npm install
-echo "[>] Done."
 
 echo "[i] Starting services"
 pm2
