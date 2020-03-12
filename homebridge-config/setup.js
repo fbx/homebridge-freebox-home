@@ -277,7 +277,7 @@ function createEmptyConfigFile(dir) {
     let data = {
             "bridge": {
                 "name": "Freebox Homebridge",
-                "username": "CC:22:3D:E3:CE:32",
+                "username": mac,
                 "port": 51826,
                 "pin": "123-45-678"
             },
