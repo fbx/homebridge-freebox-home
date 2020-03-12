@@ -1,5 +1,17 @@
-sudo npm install -g --unsafe-perm homebridge
-sudo npm install -g homebridge-http-pir-motion-sensor
-sudo npm install -g homebridge-http-contact-sensor
-sudo npm install -g homebridge-http-securitysystem
+if [ ! -d /usr/local/lib/node_modules/homebridge ]; then
+    sudo npm install -g --unsafe-perm homebridge
+fi
+
+if [ ! -d /usr/local/lib/node_modules/homebridge ]; then
+    sudo npm install -g homebridge-http-securitysystem
+fi
+
+if [ ! -d /usr/local/lib/node_modules/homebridge-http-contact-sensor ]; then
+    sudo npm install -g homebridge-http-contact-sensor
+fi
+
+if [ ! -d /usr/local/lib/node_modules/homebridge-http-pir-motion-sensor ]; then
+    sudo npm install -g homebridge-http-pir-motion-sensor
+fi
+
 # sudo npm install -g homebridge-camera-ffmpeg

@@ -18,12 +18,15 @@ if [ -d ${NODE_EXISTS} ]; then
     sudo apt-get --assume-yes install npm
 fi
 
-echo "[i] Checking node version"
-sudo npm cache clean -f
-sudo npm install -g n
-sudo n stable
+
+if [ ! -d /usr/local/lib/node_modules/n ]; then
+    echo "[i] Checking node version"
+    sudo npm cache clean -f
+    sudo npm install -g n
+    sudo n stable
+fi
+
 PATH="$PATH"
-echo "[>] Done."
 
 echo "[i] Check npm version"
 sudo npm install npm@latest -g
