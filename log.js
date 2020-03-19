@@ -33,10 +33,8 @@ module.exports = function(type) {
 
     this.getLogs = function(path, callback) {
         this.getContentOfFile(path, (data) => {
-            console.log(data)
-            let logs = this.cleanDuplicatedLines(data)
-            console.log(logs)
-            callback(logs)
+            //let logs = this.cleanDuplicatedLines(data)
+            callback(data)
         })
     }
 
