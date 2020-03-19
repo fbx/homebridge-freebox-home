@@ -3,6 +3,7 @@ let fbxHome = require('./../fbx-home/fbx-home')
 let fbxAuth = require('./../fbx-auth/session')
 let envManager = require('./../fbx-auth/env-manager')
 let homebridge = require('./../homebridge-config/setup')
+let Logs = require('./../log')
 
 const RETRY_TIMEOUT = 2000 // 2 seconds
 
@@ -261,6 +262,38 @@ router.post('/alarm/target', function(req, res) {
 router.get('/ping', function(req, res) {
 	res.status(200)
 	res.send("OK")
+})
+
+router.get('/log/homebridge/error', function(req, res) {
+	let hbLogs = new Logs()
+	hbLogs.getHomebridgeErrorLogs((logs) => {
+		res.status(200)
+		res.send(logs)
+	})
+})
+
+router.get('/log/homebridge', function(req, res) {
+	let hbLogs = new Logs()
+	hbLogs.getHomebridgeLogs((logs) => {
+		res.status(200)
+		res.send(logs)
+	})
+})
+
+router.get('/log/server/error', function(req, res) {
+	let hbLogs = new Logs()
+	hbLogs.getServerErrorLogs((logs) => {
+		res.status(200)
+		res.send(logs)
+	})
+})
+
+router.get('/log/server', function(req, res) {
+	let hbLogs = new Logs()
+	hbLogs.getServerLogs((logs) => {
+		res.status(200)
+		res.send(logs)
+	})
 })
 
 // To notify the controller with new auth data
