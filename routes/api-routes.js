@@ -107,11 +107,10 @@ router.get('/node/:id', function(req, res) {
 	}
 	let nodeId = parseInt(req.params.id, 10)
 	fbxHome.nodeStatus(nodeId, (status) => {
+		res.status(200)
 		if(status != null) {
-			res.status(200)
 			res.send(status.toString())
 		} else {
-			res.status(400)
 			res.send(null)
 		}
 	})

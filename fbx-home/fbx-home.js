@@ -92,7 +92,7 @@ module.exports.nodeStatus = function(id, callback) {
 	if(auth.session) {
 		this.getNode(id, (node) => {
 			if (node == null) {
-				console.log('[!] Requested status for a non-sensor node.')
+				console.log('[!] Requested status for a non-sensor node or node is null.')
 				callback(null)
 				return
 			}
@@ -108,17 +108,15 @@ module.exports.nodeStatus = function(id, callback) {
 						let status = sensors.sensorStatus(body)
 						callback(status)
 					} else {
-						console.log(body)
 						callback(null)
 					}
 				} else {
-					console.log('[!] Unable to request home API')
 					callback(null)
 				}
 			})
 		})
 	} else {
-		console.log('No session running')
+		console.log('[>] No session running')
 		callback(null)
 	}
 }
@@ -333,9 +331,9 @@ function updateAuth(new_session, new_challenge, token, trackId) {
 		console.log('[!] Credentials trying updating with a null token')
 		return
 	}
-	if (auth.session != new_session) {
-		console.log("[-] renewed session  : "+new_session)
-	}
+	// if (auth.session != new_session) {
+	// 	console.log("[-] renewed session  : "+new_session)
+	// }
 	auth.session = new_session
 	auth.challenge = new_challenge
 	auth.token = token

@@ -15,11 +15,11 @@ let app = express()
 var autoAuth = checkAutoAuth(process.argv)
 let created = createEnvFile()
 let server = app.listen(port, function () {
-	console.log('[-] Running on port : 8888')
+	//console.log('[-] Running on port : 8888')
 	// if auto auth is enabled or a env file is present
 	if (autoAuth || (created == false)) {
 		freeboxAuth((success) => {
-			console.log('[i] Retreiving tokens')
+			//console.log('[i] Retreiving tokens')
 			if (success) {
 				startServer()
 			} else {
@@ -66,11 +66,11 @@ function createEnvFile() {
 	if(!fs.existsSync(file)) {
 		let data = 'TOKEN=null\nTRACK=null'
 		fs.writeFile('./.env', data, (err) => {
-			console.log("[-] Created env file")
+			//console.log("[-] Created env file")
 		})
 		return true
 	} else {
-		console.log('[-] Env file already present')
+		//console.log('[-] Env file already present')
 		return false
 	}
 }
