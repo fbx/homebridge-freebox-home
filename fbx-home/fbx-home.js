@@ -54,6 +54,7 @@ module.exports.getNodeList = function(filter, callback) {
 			if(body != null) {
 				if(body.success == true) {
 					let list = nodes.nodeList(body, filter)
+					console.log('[i] Local node list has been updated')
 					local_node_list = list
 					callback(list)
 				} else {
@@ -72,31 +73,17 @@ module.exports.getNodeList = function(filter, callback) {
 }
 
 module.exports.getNode = function(id, callback) {
-	if(local_node_list != null) {
-		let node = nodes.retrieveNode(id, local_node_list)
-		if(node != null) {
-			callback(node)
+	if(local_node_list.length == 0) {
+			console.log('[!] Tried to retreive node status with no node list stored')
+			this.getNodeList(null, (list) => {
+					this.getNode(id, callback)
+			})
 			return
-		}
 	}
-	if(auth.session) {
-		let url = 'http://mafreebox.freebox.fr/api/v6/home/nodes/'+id
-		authRequest('GET', url, null, (statusCode, body) => {
-			if(body != null) {
-				if(body.success == true) {
-					let node = nodes.node(body)
-					callback(node)
-				} else {
-					console.log(body)
-					callback(null)
-				}
-			} else {
-				console.log('[!] Unable to request home API')
-				callback(null)
-			}
-		})
+	let node = nodes.retrieveNode(id, local_node_list)
+	if(node != null) {
+		callback(node)
 	} else {
-		console.log('No session running')
 		callback(null)
 	}
 }
