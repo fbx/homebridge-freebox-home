@@ -89,11 +89,9 @@ module.exports.node = function(object) {
 
 module.exports.retrieveNode =  function(id, list) {
 	if(list) {
-		for(node of list) {
-			if(node.id == id) {
-				return node
-			} else {
-				return null
+		for(currentNode of list) {
+			if(currentNode.id == id) {
+				return currentNode
 			}
 		}
 	} else {
