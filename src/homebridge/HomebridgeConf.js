@@ -7,7 +7,7 @@ module.exports = function(nodeController) {
         let homedir = require('os').homedir()
         let confFilePath = homedir+'/.homebridge/config.json'
         if(!fs.existsSync(confFilePath)) {
-            createEmptyConfigFile(confFilePath)
+            this.createEmptyConfigFile(confFilePath)
         }
         fs.readFile(confFilePath, (err, data) => {
             let config = JSON.parse(data)
