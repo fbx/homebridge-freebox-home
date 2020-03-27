@@ -1,7 +1,6 @@
 let fs = require('fs')
 
-module.exports = function(type) {
-    this.type = type
+module.exports = function() {
 
     this.getHomebridgeLogs = function(callback) {
         let path = '/etc/.pm2/logs/homebridge-out.log'
@@ -33,15 +32,8 @@ module.exports = function(type) {
 
     this.getLogs = function(path, callback) {
         this.getContentOfFile(path, (data) => {
-            //let logs = this.cleanDuplicatedLines(data)
             callback(data)
         })
-    }
-
-    this.cleanDuplicatedLines = function(data) {
-        const array = data.split('\n')
-        let unique = [...new Set(array)]
-        return unique.join('<br>')
     }
 
     this.getContentOfFile = function(path, callback) {

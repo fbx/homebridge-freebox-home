@@ -1,13 +1,14 @@
-let request = require("./../network/request.js")
+let Network = require("../network/Network")
 let crypto = require("crypto-js")
 
 // will try every RETRY_TIMEOUT with a delay of RETRY_COUNT
 const RETRY_COUNT   = 30
 const RETRY_TIMEOUT = 2000 // 2 seconds
 
-
 var accessAttemptCount = 0
 var sessionAttemptCount = 0
+
+let network = new Network()
 
 // Setup the complete auth process.
 // This method is exposed and will be called when the server starts.
@@ -51,7 +52,7 @@ function auth(callback) {
 		"device_name":"server"
 	}
 	let header = { }
-	request.basicRequest('POST', url, header, data, (statusCode, body) => {
+	network.request('POST', url, header, data, (statusCode, body) => {
 		if(body != null) {
 			let trackId = body.result.track_id
 			let token = body.result.app_token
@@ -102,7 +103,7 @@ function start(token, trackId, callback) {
 // Check for the access to be granted (user has taped the check mark on the box).
 function grantAccess(trackId, callback) {
 	let url = 'http://mafreebox.freebox.fr/api/v6/login/authorize/'+trackId
-	request.basicRequest('GET', url, {}, {}, (statusCode, body) => {
+	network.request('GET', url, {}, {}, (statusCode, body) => {
 		if (body != null && body.result != null) {
 			if (body.result.status == 'granted') {
 				callback(1, body.result.challenge)
@@ -137,7 +138,7 @@ function session(token, challenge, callback) {
 			"app_version": "1.0",
 			"password": password
 		}
-		request.basicRequest('POST', url, header, data, (statusCode, body) => {
+		network.request('POST', url, header, data, (statusCode, body) => {
 			if (body.success == false) {
 				console.log("[!] Unable to start session")
 				setTimeout(function() {
