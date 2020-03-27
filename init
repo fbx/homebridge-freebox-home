@@ -50,6 +50,6 @@ sleep 10
 # then kill it
 pm2 stop 0
 # then, start the server
-pm2 start index.js # -l ~/log/server
+pm2 start src/index.js # -l ~/log/server
 pm2 start 0
 pm2 save
