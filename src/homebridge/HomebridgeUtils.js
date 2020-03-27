@@ -1,3 +1,5 @@
+let fs = require('fs')
+
 module.exports.clean = function(callback) {
     const { exec } = require("child_process");
     let command = 'rm /root/.homebridge/persist/*'
