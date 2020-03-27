@@ -52,9 +52,9 @@ module.exports = function(nodeController) {
     }
 
     this.createEmptyConfigFile = function(dir) {
-        var mac = randomHex(2)
+        var mac = this.randomHex(2)
         for (var j = 1;j<6;j++) {
-            mac = mac + ':' + randomHex(2);
+            mac = mac + ':' + this.randomHex(2);
         }
         mac = mac.toUpperCase()
         let data = {
