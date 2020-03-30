@@ -14,4 +14,6 @@ if [ ! -d /usr/local/lib/node_modules/homebridge-http-pir-motion-sensor ]; then
     sudo npm install -g homebridge-http-pir-motion-sensor
 fi
 
-# sudo npm install -g homebridge-camera-ffmpeg
+if [ ! -d /usr/local/lib/node_modules/homebridge-camera-ffmpeg ]; then
+    sudo npm install -g homebridge-camera-ffmpeg
+fi
