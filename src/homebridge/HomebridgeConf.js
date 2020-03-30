@@ -2,9 +2,22 @@ let fs = require('fs')
 
 module.exports = function(sensorController) {
     this.sensorController = sensorController
-    this.setup = function(callback) {
+    this.setup = function(config, callback) {
         let homedir = require('os').homedir()
         let confFilePath = homedir+'/.homebridge/config.json'
+
+        var alarmEnabled = false
+        var cameraEnabled = false
+
+        if (config != null) {
+            if (config.alarmEnabled != null) {
+                alarmEnabled = config.alarmEnabled
+            }
+            if (config.cameraEnabled != null) {
+                cameraEnabled = config.cameraEnabled
+            }
+        }
+
         if(!fs.existsSync(confFilePath)) {
             this.createEmptyConfigFile(confFilePath)
         }
@@ -12,8 +25,22 @@ module.exports = function(sensorController) {
             let config = JSON.parse(data)
             this.getAccessories((accessories) => {
                 config.accessories = accessories
-                fs.writeFile(confFilePath, JSON.stringify(config), (err) => {
-                    callback(true)
+                this.getAlarm((alarm) => {
+                    if (alarmEnabled) {
+                        if (alarm != null) {
+                            config.accessories.push(alarm)
+                        }
+                    }
+                    this.getPlatforms((cameras) => {
+                        if (cameraEnabled) {
+                            if (cameras != null) {
+                                config.platforms = cameras
+                            }
+                        }
+                        fs.writeFile(confFilePath, JSON.stringify(config), (err) => {
+                            callback(true)
+                        })
+                    })
                 })
             })
         })
@@ -36,6 +63,14 @@ module.exports = function(sensorController) {
             }
             callback(accessories)
         })
+    }
+
+    this.getPlatforms = function (callback) {
+        callback([])
+    }
+
+    this.getAlarm = function (callback) {
+        callback(null)
     }
 
     this.randomHex = function(len) {

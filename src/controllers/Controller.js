@@ -87,7 +87,11 @@ module.exports = function() {
     // Returns a boolean value as a success value.
     this.handleHomebridgeConf = function(response) {
         let homebridgeConf = new HomebridgeConf(this.sensor)
-        homebridgeConf.setup((success) => {
+        let config = {
+            alarmEnabled: false,
+            cameraEnabled: false,
+        }
+        homebridgeConf.setup(config, (success) => {
             response.status(200)
             response.send(success)
         })
