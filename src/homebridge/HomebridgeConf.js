@@ -1,7 +1,10 @@
 let fs = require('fs')
+let Camera = require('./../controllers/Camera')
 
 module.exports = function(sensorController) {
     this.sensorController = sensorController
+    this.cameraController = new Camera()
+
     this.setup = function(config, callback) {
         let homedir = require('os').homedir()
         let confFilePath = homedir+'/.homebridge/config.json'
@@ -66,7 +69,26 @@ module.exports = function(sensorController) {
     }
 
     this.getPlatforms = function (callback) {
-        callback([])
+        this.cameraController.init(this.sensorController.freeboxRequest, (done, list) => {
+            var platforms = []
+            for (cam of list) {
+                let cam = {
+                    "name": cam.node_data.label,
+                    "videoConfig": {
+                        "source": '-re -i rtsp://'+cam.ip+'/live',
+                        "maxStreams": 2,
+                        "maxWidth": 1280,
+                        "maxHeight": 720,
+                        "maxFPS": 10,
+                        "maxBitrate": 300,
+                        "packetSize": 1316,
+                        "audio": true
+                    }
+                }
+                platforms.push(cam)
+            }
+            callback(platforms)
+        })
     }
 
     this.getAlarm = function (callback) {
