@@ -70,7 +70,46 @@ module.exports = function(sensorController) {
     }
 
     this.getAlarm = function (callback) {
-        callback(null)
+        let alarm = {
+            accessory: "Http-SecuritySystem",
+            name: "Alarme",
+            username: "",
+            password: "",
+            immediately: false,
+            polling: true,
+            pollInterval: 3000,
+            http_method: 'POST',
+            urls: {
+                "stay": {
+                    "url": "http://localhost:8888/api/alarm/home",
+                    "body": null
+                },
+                "away": {
+                    "url": "http://localhost:8888/api/alarm/main",
+                    "body": null
+                },
+                "night": {
+                    "url": "http://localhost:8888/api/alarm/secondary",
+                    "body": null
+                },
+                "disarm": {
+                    "url": "http://localhost:8888/api/alarm/off",
+                    "body": null
+                },
+                "readCurrentState": {
+                    "url": "http://localhost:8888/api/alarm/state",
+                    "body": null
+                },
+                "readTargetState": {
+                    "url": "http://localhost:8888/api/alarm/target",
+                    "body": null,
+                    "headers": {
+                        "Content-Type": "text/html"
+                    }
+                }
+            }
+        }
+        callback(alarm)
     }
 
     this.randomHex = function(len) {
