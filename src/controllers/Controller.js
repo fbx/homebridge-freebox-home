@@ -1,5 +1,5 @@
 let Alarm = require('./Alarm')
-let Node = require('./Node')
+let Sensor = require('./Sensor')
 let Logs = require('./Logs')
 let FreeboxRequest = require('../freeboxOS/FreeboxRequest')
 let HomebridgeConf = require('../homebridge/HomebridgeConf')
@@ -8,12 +8,12 @@ let credentials = require('../freeboxOS/Credentials')
 
 module.exports = function() {
     this.alarm = new Alarm()
-    this.node = new Node()
+    this.sensor = new Sensor()
     this.freeboxRequest = new FreeboxRequest()
     
     this.init = function() {
         this.alarm.init()
-        this.node.init(this.freeboxRequest)
+        this.sensor.init(this.freeboxRequest)
     }
 
     this.startFreeboxAuthentication = function(callback) {
@@ -50,7 +50,7 @@ module.exports = function() {
     // Will return a boolean value to show wether the app has home acces
     // or not, and will be able to request home api.
     this.handleCheckRights = function(response) {
-        this.node.testHomeCapabilities((success) => {
+        this.sensor.testHomeCapabilities((success) => {
             response.status(200)
             response.send(success)
         })
@@ -86,7 +86,7 @@ module.exports = function() {
     // Load a homebridge configuration file with the available nodes.
     // Returns a boolean value as a success value.
     this.handleHomebridgeConf = function(response) {
-        let homebridgeConf = new HomebridgeConf(this.node)
+        let homebridgeConf = new HomebridgeConf(this.sensor)
         homebridgeConf.setup((success) => {
             response.status(200)
             response.send(success)
@@ -124,7 +124,7 @@ module.exports = function() {
     // Returns the list of the available nodes (only ids).
     // Will be called only from localhost.
     this.handleNodeList = function(response) {
-        this.node.getNodeList((list) => {
+        this.sensor.getNodeList((list) => {
             var nodes = []
             for (item of list) {
                 let node = {
@@ -143,7 +143,7 @@ module.exports = function() {
     // This will be the method used by homebridge.
     // Will be called only from localhost.
     this.handleNodeStatus = function(id, response) {
-        this.node.getNodeStatus(id, (status) => {
+        this.sensor.getNodeStatus(id, (status) => {
             response.status(200)
             response.send(status)
         })

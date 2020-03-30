@@ -1,8 +1,7 @@
 let fs = require('fs')
-let Node = require('./../controllers/Node')
 
-module.exports = function(nodeController) {
-    this.nodeController = nodeController
+module.exports = function(sensorController) {
+    this.sensorController = sensorController
     this.setup = function(callback) {
         let homedir = require('os').homedir()
         let confFilePath = homedir+'/.homebridge/config.json'
@@ -21,7 +20,7 @@ module.exports = function(nodeController) {
     }
 
     this.getAccessories = function(callback) {
-        nodeController.getNodeList((list) => {
+        this.sensorController.getNodeList((list) => {
             let accessories = []
             for (node of list) {
                 if (node.type == 'pir' || node.type == 'dws') {
