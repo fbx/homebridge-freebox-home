@@ -12,7 +12,7 @@ module.exports = function() {
     this.freeboxRequest = new FreeboxRequest()
     
     this.init = function() {
-        this.alarm.init()
+        this.alarm.init(this.freeboxRequest)
         this.sensor.init(this.freeboxRequest)
     }
 
@@ -157,7 +157,57 @@ module.exports = function() {
     // Alarm
     // ------------
 
-    // TODO : Add alarm requests
+    this.handleAlarmMain = function(response) {
+        this.alarm.setAlarmMain((success) => {
+            response.status(200)
+            response.send(success)
+        })
+    }
+
+    this.handleAlarmSecondary = function(response) {
+        this.alarm.setAlarmSecondary((success) => {
+            response.status(200)
+            response.send(success)
+        })
+    }
+
+    this.handleAlarmOff = function(response) {
+        this.alarm.setAlarmDisabled((success) => {
+            response.status(200)
+            response.send(success)
+        })
+    }
+
+    this.handleAlarmState = function(response) {
+        this.alarm.getAlarmState((state) => {
+            var stateValue = 0
+            if (state == 'alarm1_armed') {
+                stateValue = 1
+            }
+            if (state == 'alarm2_armed') {
+                stateValue = 2
+            }
+            if (state == 'alert') {
+                stateValue = 4
+            }
+            response.status(200)
+            response.send(stateValue.toString())
+        })
+    }
+
+    this.handleAlarmTarget = function(response) {
+        this.alarm.getAlarmTarget((target) => {
+            var stateValue = 0
+            if (target == 'alarm1_armed' || target == 'alarm1_arming') {
+                stateValue = 1
+            }
+            if (target == 'alarm2_armed' || target == 'alarm2_arming') {
+                stateValue = 2
+            }
+            response.status(200)
+            response.send(stateValue.toString())
+        })
+    }
 
     // ------------
     // Logs
