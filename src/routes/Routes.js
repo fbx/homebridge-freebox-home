@@ -50,6 +50,12 @@ module.exports = function() {
         self.router.get('/homebridge/conf/alarm', function(req, res) {
             self.controller.handleHomebridgeConfWithAlarm(res)
         })
+        self.router.get('/homebridge/conf/cam', function(req, res) {
+            self.controller.handleHomebridgeConfWithCamera(res)
+        })
+        self.router.get('/homebridge/conf/full', function(req, res) {
+            self.controller.handleHomebridgeConfFull(res)
+        })
         self.router.get('/homebridge/clean', function(req, res) {
             self.controller.handleHomebridgeClean(res)
         })

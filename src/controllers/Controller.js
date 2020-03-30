@@ -102,8 +102,44 @@ module.exports = function() {
     // including the alarm.
     // Returns a boolean value as a success value.
     this.handleHomebridgeConfWithAlarm = function(response) {
-        let homebridgeConf = new HomebridgeConf()
-        homebridgeConf.setup((success) => {
+        let homebridgeConf = new HomebridgeConf(this.sensor)
+        let config = {
+            alarmEnabled: true,
+            cameraEnabled: false,
+        }
+        homebridgeConf.setup(config, (success) => {
+            response.status(200)
+            response.send(success)
+        })
+    }
+
+    // > [GET] host:port/api/homebridge/conf/cam
+    // Load a homebridge configuration file with the available nodes,
+    // including the camera.
+    // Returns a boolean value as a success value.
+    this.handleHomebridgeConfWithCamera = function(response) {
+        let homebridgeConf = new HomebridgeConf(this.sensor)
+        let config = {
+            alarmEnabled: false,
+            cameraEnabled: true,
+        }
+        homebridgeConf.setup(config, (success) => {
+            response.status(200)
+            response.send(success)
+        })
+    }
+
+    // > [GET] host:port/api/homebridge/conf/full
+    // Load a homebridge configuration file with the available nodes,
+    // including the alarm and the camera.
+    // Returns a boolean value as a success value.
+    this.handleHomebridgeConfFull = function(response) {
+        let homebridgeConf = new HomebridgeConf(this.sensor)
+        let config = {
+            alarmEnabled: true,
+            cameraEnabled: true,
+        }
+        homebridgeConf.setup(config, (success) => {
             response.status(200)
             response.send(success)
         })
