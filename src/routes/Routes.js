@@ -62,7 +62,30 @@ module.exports = function() {
             let nodeId = parseInt(req.params.id, 10)
             self.controller.handleNodeStatus(nodeId, res)
         })
-        // TODO : Add alarm requests
+        self.router.get('/alarm/main', function(req, res) {
+            self.checkUnauthorizedRequest(req)
+            self.controller.handleAlarmMain(res)
+        })
+        self.router.get('/alarm/secondary', function(req, res) {
+            self.checkUnauthorizedRequest(req)
+            self.controller.handleAlarmSecondary(res)
+        })
+        self.router.get('/alarm/off', function(req, res) {
+            self.checkUnauthorizedRequest(req)
+            self.controller.handleAlarmOff(res)
+        })
+        self.router.get('/alarm/home', function(req, res) {
+            self.checkUnauthorizedRequest(req)
+            self.controller.handleAlarmOff(res)
+        })
+        self.router.get('/alarm/target', function(req, res) {
+            self.checkUnauthorizedRequest(req)
+            self.controller.handleAlarmTarget(res)
+        })
+        self.router.get('/alarm/state', function(req, res) {
+            self.checkUnauthorizedRequest(req)
+            self.controller.handleAlarmState(res)
+        })
         self.router.get('/log/server', function(req, res) {
             self.controller.handleServerLogs(res)
         })
