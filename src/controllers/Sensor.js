@@ -92,7 +92,6 @@ module.exports = function() {
                         nodeList.push(item)
                     }
                     this.storedNodeList = nodeList
-                    console.log('Stored node list updated')
                     callback(nodeList)
                 } else {
                     console.log('[!] Got a '+statusCode+', unable to request : '+url)

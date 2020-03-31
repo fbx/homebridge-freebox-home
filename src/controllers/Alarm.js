@@ -6,7 +6,6 @@ module.exports = function() {
     this.init = function(freeboxRequest) {
         this.freeboxRequest = freeboxRequest
         this.getAlarm((alarm) => {
-            console.log('>>> got alarm')
             this.storedAlarmNode = alarm
             this.refreshAlarmTarget()
         })
@@ -46,14 +45,12 @@ module.exports = function() {
                     }
                 }
                 self = this
-                console.log('>>> will refresh alarm target ('+this.storedAlarmTarget+')')
                 setTimeout(function() {
                     self.refreshAlarmTarget()
                 }, 10000)
             })
         } else {
             self = this
-            console.log('>>> storedAlarmNode null will refresh alarm target')
             setTimeout(function() {
                 self.getAlarm((alarm) => {
                     self.storedAlarmNode = alarm
@@ -97,7 +94,6 @@ module.exports = function() {
             this.getAlarmState((state) => {
                 console.log(state)
                 if(state != 'idle') {
-                    console.log('need to disable')
                     this.setAlarmDisabled((success) => {
                         callback(success)
                     })
@@ -130,7 +126,6 @@ module.exports = function() {
 						}
 						callback(body.result.value)
 					} else {
-						console.log(body)
 						callback(null)
 					}
 				} else {
