@@ -100,7 +100,7 @@ module.exports = function(sensorController) {
             immediately: false,
             polling: true,
             pollInterval: 3000,
-            http_method: 'POST',
+            http_method: 'GET',
             urls: {
                 "stay": {
                     "url": "http://localhost:8888/api/alarm/home",
