@@ -19,12 +19,13 @@ module.exports = function() {
             this.i ++
             let cam = this.list[this.i]
             if (cam != null) {
+                console.log('[i] Activating camera '+cam.id+' (at '+cam.ip+')')
                 this.activateRTSP(cam, (success) => {
+                    console.log('[i] Done activating '+cam.id)
                     this.activateNext(callback)
                 })
             } else {
-                for (cam of this.list) {
-                }
+                console.log('[i] Done activating cameras')
                 callback(true)
                 this.i = 0
             }
@@ -65,8 +66,8 @@ module.exports = function() {
 
     this.activateRTSP = function(camera, callback) {
         let url = 'http://'+camera.login+':'+camera.password+'@'+camera.ip+'/adm/set_group.cgi?group=H264&sp_uri=live'
+        console.log('[i] Requesting '+url)
         request(url, function (error, response, body) {
-            console.log(body)
             if(body == 'OK') {
                 callback(true)
             } else {
