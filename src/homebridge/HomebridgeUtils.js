@@ -4,16 +4,16 @@ module.exports.clean = function(callback) {
     const { exec } = require("child_process");
     let command = 'rm /root/.homebridge/persist/*'
     exec(command, (error, stdout, stderr) => {
+        var success = true
         if (error) {
-            //console.log(`error: ${error.message}`)
-            callback(false)
+            success = false
+            console.log(error)
         }
         if (stderr) {
-            //console.log(`stderr: ${stderr}`)
-            callback(false)
+            success = false
+            console.log(`${stderr}`)
         }
-        //console.log(`stdout: ${stdout}`)
-        callback(true)
+        callback(success)
     })
 }
 
@@ -25,16 +25,16 @@ module.exports.restart = function(callback) {
                 const { exec } = require("child_process");
                 let command = 'sudo kill -KILL ' + data
                 exec(command, (error, stdout, stderr) => {
+                    var success = true
                     if (error) {
-                        //console.log(`error: ${error.message}`)
-                        callback(false)
+                        success = false
+                        console.log(error)
                     }
                     if (stderr) {
-                        //console.log(`stderr: ${stderr}`)
-                        callback(false)
+                        success = false
+                        console.log(`${stderr}`)
                     }
-                    //console.log(`stdout: ${stdout}`)
-                    callback(true)
+                    callback(success)
                 })
             }
         })
