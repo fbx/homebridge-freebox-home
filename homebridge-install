@@ -15,5 +15,6 @@ if [ ! -d /usr/local/lib/node_modules/homebridge-http-pir-motion-sensor ]; then
 fi
 
 if [ ! -d /usr/local/lib/node_modules/homebridge-camera-ffmpeg ]; then
+    sudo curl -Lf# https://github.com/homebridge/ffmpeg-for-homebridge/releases/latest/download/ffmpeg-debian-$(uname -m).tar.gz | sudo tar xzf - -C / --no-same-owner
     sudo npm install -g homebridge-camera-ffmpeg
 fi
