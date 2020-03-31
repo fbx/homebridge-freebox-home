@@ -83,9 +83,7 @@ module.exports = function(sensorController) {
                         "maxStreams": 2,
                         "maxWidth": 1280,
                         "maxHeight": 720,
-                        "maxFPS": 10,
-                        "maxBitrate": 300,
-                        "packetSize": 1316,
+                        "maxFPS": 30,
                         "audio": true
                     }
                 }
