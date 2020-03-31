@@ -11,7 +11,7 @@ module.exports = function(sensorController) {
 
         var alarmEnabled = false
         var cameraEnabled = false
-
+        
         if (config != null) {
             if (config.alarmEnabled != null) {
                 alarmEnabled = config.alarmEnabled
@@ -72,7 +72,7 @@ module.exports = function(sensorController) {
         this.cameraController.init(this.sensorController.freeboxRequest, (done, list) => {
             var platforms = []
             for (cam of list) {
-                let cam = {
+                let camera = {
                     "name": cam.node_data.label,
                     "videoConfig": {
                         "source": '-re -i rtsp://'+cam.ip+'/live',
@@ -85,7 +85,7 @@ module.exports = function(sensorController) {
                         "audio": true
                     }
                 }
-                platforms.push(cam)
+                platforms.push(camera)
             }
             callback(platforms)
         })

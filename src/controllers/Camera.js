@@ -6,25 +6,28 @@ module.exports = function() {
         this.listCamera((cameras) => {
             this.list = cameras
             this.activateNext((done) => {
-                callback(done)
+                callback(done, this.list)
             })
         })
     }
 
     this.list = []
-    this.i = 0
+    this.i = -1
 
     this.activateNext = function(callback) {
-        if (this.i != 0) {
+        if (this.list != null) {
             this.i ++
-        }
-        if (this.i <= this.list.length) {
-            this.activateRTSP(this.list[this.i], (success) => {
-                this.activateNext(callback)
-            })
-        } else {
-            callback(true, this.list)
-            this.i = 0
+            let cam = this.list[this.i]
+            if (cam != null) {
+                this.activateRTSP(cam, (success) => {
+                    this.activateNext(callback)
+                })
+            } else {
+                for (cam of this.list) {
+                }
+                callback(true)
+                this.i = 0
+            }
         }
     }
 
@@ -46,6 +49,7 @@ module.exports = function() {
                             camList.push(cam)
                         }
                     }
+                    this.list = camList
                     callback(camList)
                 } else {
                     console.log('[!] Got a '+statusCode+', unable to request : '+url)
