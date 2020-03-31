@@ -2,7 +2,7 @@ if [ ! -d /usr/local/lib/node_modules/homebridge ]; then
     sudo npm install -g --unsafe-perm homebridge
 fi
 
-if [ ! -d /usr/local/lib/node_modules/homebridge ]; then
+if [ ! -d /usr/local/lib/node_modules/homebridge-http-securitysystem ]; then
     sudo npm install -g homebridge-http-securitysystem
 fi
 

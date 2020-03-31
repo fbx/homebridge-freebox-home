@@ -70,7 +70,11 @@ module.exports = function(sensorController) {
 
     this.getPlatforms = function (callback) {
         this.cameraController.init(this.sensorController.freeboxRequest, (done, list) => {
-            var platforms = []
+            let platforms = []
+            var ffmpegCams = {
+                platform: "Camera-ffmpeg",
+                cameras: []
+            }
             for (cam of list) {
                 let camera = {
                     "name": cam.node_data.label,
@@ -85,8 +89,9 @@ module.exports = function(sensorController) {
                         "audio": true
                     }
                 }
-                platforms.push(camera)
+                ffmpegCams.cameras.push(camera)
             }
+            platforms.push(ffmpegCams)
             callback(platforms)
         })
     }
