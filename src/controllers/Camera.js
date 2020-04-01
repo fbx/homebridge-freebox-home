@@ -71,6 +71,7 @@ module.exports = function() {
             if(body.includes('OK')) {
                 callback(true)
             } else {
+                console.log(body)
                 console.log('[!] Failed activating '+camera.login+':XXXXXX@'+camera.ip)
                 callback(false)
             }
