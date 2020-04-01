@@ -19,7 +19,7 @@ module.exports = function() {
             this.i ++
             let cam = this.list[this.i]
             if (cam != null) {
-                console.log('[i] Activating camera '+cam.id+' (at '+cam.ip+')')
+                console.log('[i] Activating camera '+cam.ip)
                 this.activateRTSP(cam, (success) => {
                     console.log('[i] Done activating '+cam.id)
                     this.activateNext(callback)
@@ -66,11 +66,12 @@ module.exports = function() {
 
     this.activateRTSP = function(camera, callback) {
         let url = 'http://'+camera.login+':'+camera.password+'@'+camera.ip+'/adm/set_group.cgi?group=H264&sp_uri=live'
-        console.log('[i] Requesting '+url)
+        console.log('[i] Requesting RTSP for camera '+camera.id)
         request(url, function (error, response, body) {
-            if(body == 'OK') {
+            if(body.includes('OK')) {
                 callback(true)
             } else {
+                console.log('[!] Failed activating '+camera.login+':XXXXXX@'+camera.ip)
                 callback(false)
             }
         })
