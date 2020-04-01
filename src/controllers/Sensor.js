@@ -178,7 +178,6 @@ module.exports = function() {
     }
 
     this.getNodeStatus = function(id, callback) {
-        console.log(this.storedStatus)
         if (this.storedStatus != null && this.storedStatus.length != 0) {
             for (node of this.storedStatus) {
                 if (node.id == id) {
