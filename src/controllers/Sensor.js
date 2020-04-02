@@ -63,12 +63,19 @@ module.exports = function() {
     }
 
     this.testHomeCapabilities = function(callback) {
-        let url = 'http://mafreebox.freebox.fr/api/v6/home/nodes'
-        this.freeboxRequest.request('GET', url, null, (statusCode, data) => {
+        let urlHome = 'http://mafreebox.freebox.fr/api/v6/home/nodes'
+        this.freeboxRequest.request('GET', urlHome, null, (statusCode, data) => {
             if(statusCode == 401) {
                 callback(false)
             } else {
-                callback(true)
+                let urlCam = 'http://mafreebox.freebox.fr/api/v6/camera/'
+                this.freeboxRequest.request('GET', urlHome, null, (statusCode, data) => {
+                    if (statusCode == 401) {
+                        callback(false)
+                    } else {
+                        callback(true)
+                    }
+                })
             }
         }, false)
     }
