@@ -69,7 +69,7 @@ module.exports = function() {
                 callback(false)
             } else {
                 let urlCam = 'http://mafreebox.freebox.fr/api/v6/camera/'
-                this.freeboxRequest.request('GET', urlHome, null, (statusCode, data) => {
+                this.freeboxRequest.request('GET', urlCam, null, (statusCode, data) => {
                     if (statusCode == 401) {
                         callback(false)
                     } else {
