@@ -76,18 +76,20 @@ module.exports = function(sensorController) {
                 cameras: []
             }
             for (cam of list) {
-                let camera = {
-                    "name": cam.node_data.label,
-                    "videoConfig": {
-                        "source": '-re -i rtsp://'+cam.ip+'/live',
-                        "maxStreams": 2,
-                        "maxWidth": 1280,
-                        "maxHeight": 720,
-                        "maxFPS": 30,
-                        "audio": true
+                if (cam.ip != '0.0.0.0') {
+                    let camera = {
+                        "name": cam.node_data.label,
+                        "videoConfig": {
+                            "source": '-re -i rtsp://'+cam.ip+'/live',
+                            "maxStreams": 2,
+                            "maxWidth": 1280,
+                            "maxHeight": 720,
+                            "maxFPS": 30,
+                            "audio": true
+                        }
                     }
+                    ffmpegCams.cameras.push(camera)
                 }
-                ffmpegCams.cameras.push(camera)
             }
             platforms.push(ffmpegCams)
             callback(platforms)

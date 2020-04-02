@@ -65,6 +65,11 @@ module.exports = function() {
     }
 
     this.activateRTSP = function(camera, callback) {
+        if (camera.ip == '0.0.0.0') {
+            console.log('[!] Failed activating '+camera.login+':XXXXXX@'+camera.ip)
+            callback(false)
+            return
+        }
         let url = 'http://'+camera.login+':'+camera.password+'@'+camera.ip+'/adm/set_group.cgi?group=H264&sp_uri=live'
         console.log('[i] Requesting RTSP for camera '+camera.id)
         request(url, function (error, response, body) {
