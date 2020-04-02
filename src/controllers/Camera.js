@@ -73,13 +73,18 @@ module.exports = function() {
         let url = 'http://'+camera.login+':'+camera.password+'@'+camera.ip+'/adm/set_group.cgi?group=H264&sp_uri=live'
         console.log('[i] Requesting RTSP for camera '+camera.id)
         request(url, function (error, response, body) {
-            if(body.includes('OK')) {
-                callback(true)
-            } else {
-                console.log(body)
-                console.log('[!] Failed activating '+camera.login+':XXXXXX@'+camera.ip)
-                callback(false)
+            if (body != null) {
+                if(body.includes('OK')) {
+                    callback(true)
+                } else {
+                    console.log(body)
+                    console.log('[!] Failed activating '+camera.login+':XXXXXX@'+camera.ip)
+                    callback(false)
+                }
             }
+            console.log('[!] Failed activating '+camera.login+':XXXXXX@'+camera.ip+' got a null response.')
+            console.log(error)
+            callback(false)
         })
     }
 }

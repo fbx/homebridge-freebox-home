@@ -25,24 +25,28 @@ module.exports = function() {
             var self = this
             let url = 'http://mafreebox.freebox.fr/api/v6/home/endpoints/get'
             this.freeboxRequest.request('POST', url, requestData, (statusCode, data) => {
-                if (data.success == true) {
-                    if (data.result != null) {
-                        this.storedStatus = []
-                        var index = 0
-                        for (status of data.result) {
-                            var statusData = 0
-                            if (status.value == false) {
-                                statusData = 1
+                if (data != null) {
+                    if (data.success == true) {
+                        if (data.result != null) {
+                            this.storedStatus = []
+                            var index = 0
+                            for (status of data.result) {
+                                var statusData = 0
+                                if (status.value == false) {
+                                    statusData = 1
+                                }
+                                let nodeId = requestData[index].node
+                                let nodeStatus = statusData
+                                this.storedStatus.push({
+                                    id: nodeId,
+                                    status: nodeStatus
+                                })
+                                index = index + 1
                             }
-                            let nodeId = requestData[index].node
-                            let nodeStatus = statusData
-                            this.storedStatus.push({
-                                id: nodeId,
-                                status: nodeStatus
-                            })
-                            index = index + 1
                         }
                     }
+                } else {
+                    console.log('[!] Unable to recover status for nodes. Got a null response ('+statusCode+')')
                 }
                 setTimeout(function() {
                     //console.log(this.storedStatus)
