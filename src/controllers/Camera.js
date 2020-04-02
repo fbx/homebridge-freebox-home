@@ -70,7 +70,8 @@ module.exports = function() {
             callback(false)
             return
         }
-        let url = 'http://'+camera.login+':'+camera.password+'@'+camera.ip+'/adm/set_group.cgi?group=H264&sp_uri=live'
+        let password = encodeURIComponent(camera.password)
+        let url = 'http://'+camera.login+':'+password+'@'+camera.ip+'/adm/set_group.cgi?group=H264&sp_uri=live'
         console.log('[i] Requesting RTSP for camera '+camera.id)
         request(url, function (error, response, body) {
             if (body != null) {
