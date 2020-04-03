@@ -76,16 +76,18 @@ module.exports = function() {
         request(url, function (error, response, body) {
             if (body != null) {
                 if(body.includes('OK')) {
+                    console.log('[!] Successfully activated '+camera.login+':XXXXXX@'+camera.ip)
                     callback(true)
                 } else {
                     console.log(body)
                     console.log('[!] Failed activating '+camera.login+':XXXXXX@'+camera.ip)
                     callback(false)
                 }
+            } else {
+                console.log('[!] Failed activating '+camera.login+':XXXXXX@'+camera.ip+' got a null response.')
+                console.log(error)
+                callback(false)
             }
-            console.log('[!] Failed activating '+camera.login+':XXXXXX@'+camera.ip+' got a null response.')
-            console.log(error)
-            callback(false)
         })
     }
 }

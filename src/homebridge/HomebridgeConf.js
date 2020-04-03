@@ -28,21 +28,19 @@ module.exports = function(sensorController) {
             let config = JSON.parse(data)
             this.getAccessories((accessories) => {
                 config.accessories = accessories
-                this.getAlarm((alarm) => {
-                    if (alarmEnabled) {
-                        if (alarm != null) {
-                            config.accessories.push(alarm)
+                if (alarmEnabled) {
+                    if (alarm != null) {
+                        config.accessories.push(this.getAlarm())
+                    }
+                }
+                this.getPlatforms((cameras) => {
+                    if (cameraEnabled) {
+                        if (cameras != null) {
+                            config.platforms = cameras
                         }
                     }
-                    this.getPlatforms((cameras) => {
-                        if (cameraEnabled) {
-                            if (cameras != null) {
-                                config.platforms = cameras
-                            }
-                        }
-                        fs.writeFile(confFilePath, JSON.stringify(config), (err) => {
-                            callback(true)
-                        })
+                    fs.writeFile(confFilePath, JSON.stringify(config), (err) => {
+                        callback(true)
                     })
                 })
             })
@@ -96,7 +94,7 @@ module.exports = function(sensorController) {
         })
     }
 
-    this.getAlarm = function (callback) {
+    this.getAlarm = function () {
         let alarm = {
             accessory: "Http-SecuritySystem",
             name: "Alarme",
@@ -136,7 +134,7 @@ module.exports = function(sensorController) {
                 }
             }
         }
-        callback(alarm)
+        return alarm
     }
 
     this.randomHex = function(len) {
