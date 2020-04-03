@@ -77,6 +77,9 @@ module.exports = function(sensorController) {
                 if (cam.ip != '0.0.0.0') {
                     let camera = {
                         "name": cam.node_data.label,
+                        "manufacturer": "Freebox",
+                        "model": "RocketCam",
+                        "serialNumber": '1337'+cam.id,
                         "videoConfig": {
                             "source": '-re -i rtsp://'+cam.ip+'/live',
                             "maxStreams": 2,
