@@ -60,6 +60,12 @@ module.exports = function() {
     // Will return a boolean value to show wether the app has been auth
     // or not on freebox os.
     this.handleAuth = function(response) {
+        // if the app is already authed to the box, ne need to re-auth
+        if (this.freeboxRequest.credentials != null && this.freeboxRequest.credentials.session != null) {
+            response.status(200)
+            response.send(true)
+            return
+        }
         this.freeboxRequest.freeboxAuth(null, null, (token, sessionToken, trackId, challenge) => {
             credentials.update(token, trackId, (success) => {
                 response.status(200)
