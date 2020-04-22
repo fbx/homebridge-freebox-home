@@ -29,9 +29,7 @@ module.exports = function(sensorController) {
             this.getAccessories((accessories) => {
                 config.accessories = accessories
                 if (alarmEnabled) {
-                    if (alarm != null) {
-                        config.accessories.push(this.getAlarm())
-                    }
+                    config.accessories.push(this.getAlarm())
                 }
                 this.getPlatforms((cameras) => {
                     if (cameraEnabled) {
