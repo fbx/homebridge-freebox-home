@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/Que20/freebox-home-api/raw/master/logo.png" data-canonical-src="https://github.com/Que20/freebox-home-api/raw/master/logo.png" width="338" height="120" />
+  <img src="https://github.com/fbx/freebox-home-api/raw/master/logo.png" data-canonical-src="https://github.com/Que20/freebox-home-api/fbx/master/logo.png" width="232" height="120" />
 </p>
 
 # homebridge-freebox-home
