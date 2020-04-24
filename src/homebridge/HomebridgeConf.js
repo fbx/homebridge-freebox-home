@@ -83,8 +83,10 @@ module.exports = function(sensorController) {
                             "maxStreams": 2,
                             "maxWidth": 1280,
                             "maxHeight": 720,
-                            "maxFPS": 30,
-                            "audio": true
+                            "maxBitrate": 1000,
+                            "maxFPS": 15,
+                            "audio": true,
+                            "additionalCommandline": "-pix_fmt yuv420p -x264-params intra-refresh=1:bframes=0"
                         }
                     }
                     ffmpegCams.cameras.push(camera)
