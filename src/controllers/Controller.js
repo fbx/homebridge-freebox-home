@@ -88,7 +88,7 @@ module.exports = function() {
     this.handleHomebridgeConf = function(response) {
         let homebridgeConf = new HomebridgeConf(this.sensor)
         let config = {
-            alarmEnabled: false,
+            alarmEnabled: true,
             cameraEnabled: true,
         }
         homebridgeConf.setup(config, (success) => {
