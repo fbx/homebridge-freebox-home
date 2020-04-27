@@ -1,20 +1,20 @@
 if [ ! -d /usr/local/lib/node_modules/homebridge ]; then
-    sudo npm install -g --unsafe-perm homebridge
+    sudo npm install -g --unsafe-perm homebridge@0.4.53
 fi
 
 if [ ! -d /usr/local/lib/node_modules/homebridge-http-securitysystem ]; then
-    sudo npm install -g homebridge-http-securitysystem
+    sudo npm install -g homebridge-http-securitysystem@1.0.8
 fi
 
 if [ ! -d /usr/local/lib/node_modules/homebridge-http-contact-sensor ]; then
-    sudo npm install -g homebridge-http-contact-sensor
+    sudo npm install -g homebridge-http-contact-sensor@1.0.3
 fi
 
 if [ ! -d /usr/local/lib/node_modules/homebridge-http-pir-motion-sensor ]; then
-    sudo npm install -g homebridge-http-pir-motion-sensor
+    sudo npm install -g homebridge-http-pir-motion-sensor@1.0.0
 fi
 
 if [ ! -d /usr/local/lib/node_modules/homebridge-camera-ffmpeg ]; then
     sudo curl -Lf# https://github.com/homebridge/ffmpeg-for-homebridge/releases/latest/download/ffmpeg-debian-$(uname -m).tar.gz | sudo tar xzf - -C / --no-same-owner
-    sudo npm install -g homebridge-camera-ffmpeg
+    sudo npm install -g homebridge-camera-ffmpeg@0.1.17
 fi

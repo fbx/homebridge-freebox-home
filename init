@@ -22,7 +22,7 @@ if [ ! -d /usr/local/lib/node_modules/n ]; then
     echo "[i] Checking node version"
     sudo npm cache clean -f
     sudo npm install -g n
-    sudo n stable
+    sudo n 12.16.2
 fi
 
 PATH="$PATH"
