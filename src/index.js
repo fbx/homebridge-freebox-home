@@ -2,6 +2,10 @@ let express = require('express')
 let Routes = require('./routes/Routes')
 let environment = require('./freeboxOS/Credentials')
 
+require('better-logging')(console, {
+	format: ctx => `${ctx.time24 + ctx.date} ${ctx.msg}`
+})
+
 process.title = "homebridge-freebox-home"
 
 const port = 8888
