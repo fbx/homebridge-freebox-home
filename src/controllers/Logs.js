@@ -40,7 +40,12 @@ module.exports = function() {
         if(fs.existsSync(path)) {
             fs.readFile(path, (error, data) => {
                 if (!error) {
-                    callback(data.toString())
+                    var log = ''
+                    let lines = data.toString().split('\n')
+                    for (line of lines) {
+                        log = log + line + '</br>'
+                    }
+                    callback(log)
                 } else {
                     callback(null)
                 }
