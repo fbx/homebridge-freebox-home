@@ -307,4 +307,12 @@ module.exports = function() {
             response.send(success)
         })
     }
+
+    this.handleGetVersion = function(response) {
+        let logs = new Logs()
+        logs.getLastCommitId((id) => {
+            response.status(200)
+            response.send(id.toString())
+        })
+    }
 }

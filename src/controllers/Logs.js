@@ -72,4 +72,12 @@ module.exports = function() {
             callback(success)
         })
     }
+
+    this.getLastCommitId = function(callback) {
+        const { exec } = require("child_process");
+        var command = 'cd /homebridge-freebox-home && git log --format="%H" -n 1'
+        exec(command, (error, stdout, stderr) => {
+            callback(stdout.substring(0,5))
+        })
+    }
 }

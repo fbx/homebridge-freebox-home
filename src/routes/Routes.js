@@ -107,5 +107,8 @@ module.exports = function() {
         self.router.get('/log/clear', function(req, res) {
             self.controller.handleCleanLogs(res)
         })
+        self.router.get('/version', function(req, res) {
+            self.controller.handleGetVersion(res)
+        })
     }
 }
