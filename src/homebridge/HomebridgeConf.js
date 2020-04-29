@@ -80,12 +80,12 @@ module.exports = function(sensorController) {
                         "serialNumber": '1337'+cam.id,
                         "videoConfig": {
                             "source": '-re -i rtsp://'+cam.ip+'/live',
-                            "maxStreams": 2,
+                            "maxStreams": 1,
                             "maxWidth": 1280,
                             "maxHeight": 720,
                             "maxBitrate": 1000,
                             "maxFPS": 15,
-                            "audio": true,
+                            "audio": false,
                             "additionalCommandline": "-pix_fmt yuv420p -x264-params intra-refresh=1:bframes=0"
                         }
                     }
