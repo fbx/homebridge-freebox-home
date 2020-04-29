@@ -286,4 +286,13 @@ module.exports = function() {
             response.send(logs)
         })
     }
+
+    // > [GET] host:port/api/log/clean
+    this.handleCleanLogs = function(response) {
+        let logs = new Logs()
+        logs.clearLogs((success) => {
+            response.status(200)
+            response.send(success)
+        })
+    }
 }

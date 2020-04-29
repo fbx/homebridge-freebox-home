@@ -52,4 +52,24 @@ module.exports = function() {
             })
         }
     }
+
+    this.clearLogs = function(callback) {
+        const { exec } = require("child_process");
+        var command = 'echo \'\' > /etc/.pm2/logs/index-out.log'
+        command = command +' && echo \'\' > /etc/.pm2/logs/index-error.log'
+        command = command +' && echo \'\' > /etc/.pm2/logs/homebridge-out.log'
+        command = command +' && echo \'\' > /etc/.pm2/logs/homebridge-error.log'
+        exec(command, (error, stdout, stderr) => {
+            var success = true
+            if (error) {
+                success = false
+                console.log(error)
+            }
+            if (stderr) {
+                success = false
+                console.log(`${stderr}`)
+            }
+            callback(success)
+        })
+    }
 }

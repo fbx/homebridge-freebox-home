@@ -104,5 +104,8 @@ module.exports = function() {
         self.router.get('/log/homebridge/error', function(req, res) {
             self.controller.handleHomebridgeErrorLogs(res)
         })
+        self.router.get('/log/clear', function(req, res) {
+            self.controller.handleCleanLogs(res)
+        })
     }
 }
