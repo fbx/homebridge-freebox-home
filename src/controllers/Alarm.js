@@ -2,6 +2,7 @@
 module.exports = function() {
     this.storedAlarmTarget = 0
     this.storedAlarmNode = null
+    this.isArming = false
 
     this.init = function(freeboxRequest) {
         this.freeboxRequest = freeboxRequest
@@ -41,7 +42,16 @@ module.exports = function() {
             this.freeboxRequest.request('GET', url, null, (statusCode, body) => {
                 if(body != null) {
                     if(body.success == true) {
-                        this.storedAlarmTarget = body.result.value
+                        if (body.result.value.includes('alarm1')) {
+                            this.storedAlarmTarget = 1
+                        } else if (body.result.value.includes('alarm2')) {
+                            this.storedAlarmTarget = 2
+                        } else if (body.result.value.includes('alert')) {
+                        //     this.storedAlarmTarget = 4
+                        } else {
+                            this.storedAlarmTarget = 0
+                        }
+                        // console.log('>>> [ALARM] refresehd '+body.result.value+' : '+this.storedAlarmTarget)
                     }
                 }
                 self = this
@@ -91,16 +101,20 @@ module.exports = function() {
 
     this.checkAlarmActivable = function(callback) {
         if (this.storedAlarmNode != null) {
-            this.getAlarmState((state) => {
-                console.log(state)
-                if(state != 'idle') {
-                    this.setAlarmDisabled((success) => {
-                        callback(success)
-                    })
-                } else {
-                    callback(true)
-                }
-            })
+            if (this.isArming == false) {
+                this.getAlarmState((state) => {
+                    // console.log(state)
+                    if(state != 'idle') {
+                        this.setAlarmDisabled((success) => {
+                            callback(success)
+                        })
+                    } else {
+                        callback(true)
+                    }
+                })
+            } else {
+                callback(true)
+            }
         } else {
             this.getAlarm((alarm) => {
                 this.storedAlarmNode = alarm
@@ -117,21 +131,32 @@ module.exports = function() {
                 id: this.storedAlarmNode.id,
                 value: null
             }
-            this.storedAlarmTarget = 1
             this.freeboxRequest.request('GET', url, data, (statusCode, body) => {
                 if(body != null) {
-					if(body.success == true) {
-						if (body.result.value == 'alert') {
-							local_alarm_target = 0
-						}
-						callback(body.result.value)
-					} else {
-						callback(null)
-					}
-				} else {
-					console.log('[!] Unable to request home API')
-					callback(null)
-				}
+                    if(body.success == true) {
+                        if (body.result.value.includes('alert')) {
+                            //this.storedAlarmTarget = 4
+                        }
+                        if (body.result.value == 'alarm1_armed' || body.result.value == 'alarm1_arming') {
+                            this.storedAlarmTarget = 1
+                        }
+                        if (body.result.value == 'alarm2_armed' || body.result.value == 'alarm2_arming') {
+                            this.storedAlarmTarget = 2
+                        }
+                        if (body.result.value.includes('arming')) {
+                            this.isArming = true
+                        }
+                        if (body.result.value.includes('armed')) {
+                            this.isArming = false
+                        }
+                        callback(body.result.value)
+                    } else {
+                        callback(null)
+                    }
+                } else {
+                    console.log('[!] Unable to request home API')
+                    callback(null)
+                }
             })
         } else {
             this.getAlarm((alarm) => {
@@ -153,7 +178,7 @@ module.exports = function() {
                 id: this.storedAlarmNode.id,
                 value: null
             }
-            this.storedAlarmTarget = 1
+            this.storedAlarmTarget = 0
             this.freeboxRequest.request('PUT', url, data, (statusCode, body) => {
                 if(body != null) {
                     if(body.success == true) {

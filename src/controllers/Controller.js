@@ -214,18 +214,36 @@ module.exports = function() {
         })
     }
 
+
+
+    this.armingAnAlarm = 0
+
     this.handleAlarmState = function(response) {
         this.alarm.getAlarmState((state) => {
             var stateValue = 0
+            if (state == 'alarm1_arming') {
+                this.armingAnAlarm = 1
+                stateValue = 1
+            }
+            if (state == 'alarm2_arming') {
+                this.armingAnAlarm = 2
+                stateValue = 2
+            }
             if (state == 'alarm1_armed') {
+                this.armingAnAlarm = 0
                 stateValue = 1
             }
             if (state == 'alarm2_armed') {
+                this.armingAnAlarm = 0
                 stateValue = 2
             }
             if (state == 'alert') {
                 stateValue = 4
             }
+            if (this.armingAnAlarm == 1 || this.armingAnAlarm == 2) {
+                stateValue = this.armingAnAlarm
+            }
+            console.log('>>> [ALARM] state : '+state+' => '+stateValue)
             response.status(200)
             response.send(stateValue.toString())
         })
@@ -233,17 +251,11 @@ module.exports = function() {
 
     this.handleAlarmTarget = function(response) {
         this.alarm.getAlarmTarget((target) => {
-            var stateValue = 0
-            if (target == 'alarm1_armed' || target == 'alarm1_arming') {
-                stateValue = 1
-            }
-            if (target == 'alarm2_armed' || target == 'alarm2_arming') {
-                stateValue = 2
-            }
             response.status(200)
-            response.send(stateValue.toString())
+            response.send(target.toString())
         })
     }
+
 
     // ------------
     // Logs
