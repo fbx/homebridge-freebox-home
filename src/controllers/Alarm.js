@@ -99,11 +99,16 @@ module.exports = function() {
         }
     }
 
-    this.checkAlarmActivable = function(callback) {
+    this.checkAlarmActivable = function(target, callback) {
         if (this.storedAlarmNode != null) {
             if (this.isArming == false) {
                 this.getAlarmState((state) => {
                     // console.log(state)
+                    if(state.includes(target)) {
+                        console.log('[i] About to active ['+target+'] while state is ['+state+']')
+                        callback(false)
+                        return
+                    }
                     if(state != 'idle') {
                         this.setAlarmDisabled((success) => {
                             callback(success)
@@ -118,7 +123,7 @@ module.exports = function() {
         } else {
             this.getAlarm((alarm) => {
                 this.storedAlarmNode = alarm
-                this.checkAlarmActivable(callback)
+                this.checkAlarmActivable(target, callback)
             })
         }
     }
@@ -197,7 +202,7 @@ module.exports = function() {
     }
 
     this.setAlarmMain = function(callback) {
-        this.checkAlarmActivable((activable) => {
+        this.checkAlarmActivable('alarm1', (activable) => {
             if (activable) {
                 if (this.storedAlarmNode != null) {
                     let ep_id = this.getMainEndpoint()
@@ -229,7 +234,7 @@ module.exports = function() {
     }
 
     this.setAlarmSecondary = function(callback) {
-        this.checkAlarmActivable((activable) => {
+        this.checkAlarmActivable('alarm2', (activable) => {
             if (activable) {
                 if (this.storedAlarmNode != null) {
                     let ep_id = this.getSecondaryEndpoint()
