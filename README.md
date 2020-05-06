@@ -11,23 +11,22 @@ It currently supports all the sensors (door/window and motion), the security sys
 
 ### Usage
 
-The best and simplest way to use homebridge-freebox-home will be through the `init` script.
-
-Simply running `./init` on your machine or server (works fine on Raspberry Pi Zero - also work with a Freebox VM) will automatically download homebridge plugins for supported devices and start the homebridge-freebox-home server.
-
-Or you can do it manually :
-
-**First install dependencies**
+- First install dependencies
 ```
 npm install
 npm run homebridge-install
 ```
-**Start Homebridhe**
+- Start Homebridge
 
+You can simply start Homebridge by typing :
 ```
 homebridge
 ```
-**Then start the server**
+We recommand using a node process manager such as `pm2`.
+```
+pm2 start /usr/local/bin/homebridge
+```
+- Then start the server
 
 ```
 npm run start -- auto-auth
@@ -36,10 +35,19 @@ npm run start -- auto-auth
 That will automatically setup the environement, pair to the local freebox server and build the homebridge config file.
 So you might want to stay near the freebox to allow the app through the LCD screen.
 
-**Finally grant access to the server *via* Freebox OS**
+- Grant access to the server *via* Freebox OS
 
 Go into the preference of FreeboxOS to allow the app to access you home items and camera :
 `Paramètres de la Freebox` > `Gestion des accès` and allow the `homebridge-freebox-home` app to access *Home* and *Camera* (you can disable other unused rights).
+
+- Create the Homebridge conf file
+
+In your browser go to url : `http://{host}:8888/api/homebridge/conf`replacing {host} the ip of the host machine.
+
+Make sure it returns `true`, then simply restart your Homebridge instance. If you are using `pm2`, simply type
+```
+pm2 restart Homebridge
+```
 
 ## The actual Freebox API
 The Freebox home api is a very complex API, with many endpoints, and many data and information. These data are supposed to be used in clients for the Home features of the Freebox Delta such as the Freebox companion mobile app, used to manage and configure every aspect of the Freebox Home Security items (camera, sensors, alarm...).
