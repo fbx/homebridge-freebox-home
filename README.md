@@ -11,6 +11,14 @@ It currently supports all the sensors (door/window and motion), the security sys
 
 ### Usage
 
+- Clone the repo
+```
+git clone https://github.com/fbx/homebridge-freebox-home.git
+```
+- Go the the homebridge-freebox-home directory
+```
+cd homebridge-freebox-home
+```
 - First install dependencies
 ```
 npm install
