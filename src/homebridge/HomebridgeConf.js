@@ -78,6 +78,7 @@ module.exports = function(sensorController) {
                         "manufacturer": "Freebox",
                         "model": "RocketCam",
                         "serialNumber": '1337'+cam.id,
+                        "motion": true,
                         "videoConfig": {
                             "source": '-re -i rtsp://'+cam.ip+'/live',
                             "maxStreams": 1,
