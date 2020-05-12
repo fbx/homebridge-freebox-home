@@ -43,13 +43,12 @@ npm install
 
 echo "[i] Starting services"
 pm2
-pm2 startup
 # first, start homebridge to setup the .homebridge env
-pm2 start /usr/local/bin/homebridge # -l ~/log/homebridge
+pm2 start /usr/local/bin/homebridge
 sleep 10
 # then kill it
 pm2 stop 0
 # then, start the server
-pm2 start src/index.js # -l ~/log/server
+pm2 start src/index.js
 pm2 start 0
 pm2 save
