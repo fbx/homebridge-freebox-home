@@ -4,22 +4,24 @@ let Controller = require('../controllers/Controller')
 module.exports = function() {
     this.router = require('express').Router()
     this.controller = new Controller()
+    this.polling = false
     
     this.init = function(port) {
         this.port = port
-        this.controller.init()
         this.initRoutes(this)
+    }
+
+    this.startPollingNodes = function() {
+        this.polling = true
+        this.controller.init()
     }
 
     this.startFreeboxAuthentication = function(callback) {
         this.controller.startFreeboxAuthentication((success) => {
+            if (success && (this.polling == false)) {
+                this.startPollingNodes()
+            }
             callback(success)
-            // TEST REQUEST AFTER AUTH
-            // if (success) {
-            //     this.controller.testRequest((code) => {
-            //         console.log(code)
-            //     })
-            // }
         })
     }
 
@@ -39,7 +41,11 @@ module.exports = function() {
             self.controller.handleCheckRights(res)
         })
         self.router.get('/fbx/auth', function(req, res) {
-            self.controller.handleAuth(res)
+            self.controller.handleAuth(res, (success) => {
+                if (success && (self.polling == false)) {
+                    self.startPollingNodes()
+                }
+            })
         })
         self.router.get('/homebridge/restart', function(req, res) {
             self.controller.handleHomebridgeRestart(res)

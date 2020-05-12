@@ -22,6 +22,7 @@ let server = app.listen(port, function () {
 		routes.startFreeboxAuthentication((success) => {
 			if (success) {
 				app.use('/api', routes.router)
+				routes.startPollingNodes()
 			} else {
 				server.close()
 			}

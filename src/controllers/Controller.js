@@ -59,9 +59,10 @@ module.exports = function() {
     // > [GET] host:port/api/fbx/auth
     // Will return a boolean value to show wether the app has been auth
     // or not on freebox os.
-    this.handleAuth = function(response) {
+    this.handleAuth = function(response, callback) {
         this.freeboxRequest.freeboxAuth(null, null, (token, sessionToken, trackId, challenge) => {
             credentials.update(token, trackId, (success) => {
+                callback(success)
                 response.status(200)
                 response.send(sessionToken != null)
             })
