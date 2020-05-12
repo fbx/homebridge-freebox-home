@@ -243,7 +243,7 @@ module.exports = function() {
             if (this.armingAnAlarm == 1 || this.armingAnAlarm == 2) {
                 stateValue = this.armingAnAlarm
             }
-            console.log('>>> [ALARM] state : '+state+' => '+stateValue)
+            // console.log('>>> [ALARM] state : '+state+' => '+stateValue)
             response.status(200)
             response.send(stateValue.toString())
         })
