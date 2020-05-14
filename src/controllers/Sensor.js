@@ -24,6 +24,12 @@ module.exports = function() {
             }
             var self = this
             let url = 'http://mafreebox.freebox.fr/api/v6/home/endpoints/get'
+            if (this.freeboxRequest == null) { 
+                setTimeout(function() {
+                    self.refreshStatus()
+                }, 1000)
+                return
+            }
             this.freeboxRequest.request('POST', url, requestData, (statusCode, data) => {
                 if (data != null) {
                     if (data.success == true) {
@@ -63,6 +69,7 @@ module.exports = function() {
     }
 
     this.testHomeCapabilities = function(callback) {
+        if (this.freeboxRequest == null) { callback(false) ; return }
         let urlHome = 'http://mafreebox.freebox.fr/api/v6/home/nodes'
         this.freeboxRequest.request('GET', urlHome, null, (statusCode, data) => {
             if(statusCode == 401) {
@@ -81,6 +88,7 @@ module.exports = function() {
     }
 
     this.getNodeList = function(callback) {
+        if (this.freeboxRequest == null) { callback([]) ; return }
         let url = 'http://mafreebox.freebox.fr/api/v6/home/nodes'
         this.freeboxRequest.request('GET', url, null, (statusCode, body) => {
             if (body != null) {
@@ -117,6 +125,7 @@ module.exports = function() {
     }
 
     this.getNodeListFiltred = function(filter, callback) {
+        if (this.freeboxRequest == null) { callback([]) ; return }
         let url = 'http://mafreebox.freebox.fr/api/v6/home/nodes'
         this.freeboxRequest.request('GET', url, null, (statusCode, body) => {
             if (body != null) {
