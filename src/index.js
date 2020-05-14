@@ -19,12 +19,20 @@ let server = app.listen(port, function () {
 	routes.init(port)
 	if (autoAuth || !envFileCreated) {
 		// Env file is already present (hasn't been just created) or auto auth mode
-		routes.startFreeboxAuthentication((success) => {
-			if (success) {
-				app.use('/api', routes.router)
-				routes.startPollingNodes()
+		environment.getStoredCredentials((credential) => {
+			if (credential.token != null) {
+				console.log('[!] Token found - will start auto auth')
+				routes.startFreeboxAuthentication((success) => {
+					if (success) {
+						app.use('/api', routes.router)
+						routes.startPollingNodes()
+					} else {
+						server.close()
+					}
+				})
 			} else {
-				server.close()
+				console.log('[!] Token has nil value')
+				app.use('/api', routes.router)
 			}
 		})
 	} else {
