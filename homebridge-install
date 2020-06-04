@@ -1,5 +1,10 @@
 if [ ! -d /usr/local/lib/node_modules/homebridge ]; then
     sudo npm install -g --unsafe-perm homebridge@1.1.0
+else
+    HB_CURRENT_VERSION=`npm ll -pg --depth=0 homebridge | grep -o "@.*:" | sed 's/.$//; s/^.//'`
+    if [ "$HB_CURRENT_VERSION" != "1.1.0" ]; then
+        sudo npm install -g --unsafe-perm homebridge@1.1.0
+    fi
 fi
 
 if [ ! -d /usr/local/lib/node_modules/homebridge-http-securitysystem ]; then
@@ -17,4 +22,10 @@ fi
 if [ ! -d /usr/local/lib/node_modules/homebridge-camera-ffmpeg ]; then
     sudo curl -Lf# https://github.com/homebridge/ffmpeg-for-homebridge/releases/latest/download/ffmpeg-debian-$(uname -m).tar.gz | sudo tar xzf - -C / --no-same-owner
     sudo npm install -g homebridge-camera-ffmpeg@1.2.2
+else
+    CAM_CURRENT_VERSION=`npm ll -pg --depth=0 homebridge-camera-ffmpeg | grep -o "@.*:" | sed 's/.$//; s/^.//'`
+    if [ "$CAM_CURRENT_VERSION" != "1.2.2" ]; then
+        sudo curl -Lf# https://github.com/homebridge/ffmpeg-for-homebridge/releases/latest/download/ffmpeg-debian-$(uname -m).tar.gz | sudo tar xzf - -C / --no-same-owner
+        sudo npm install -g homebridge-camera-ffmpeg@1.2.2
+    fi
 fi
