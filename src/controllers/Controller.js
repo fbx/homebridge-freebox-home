@@ -190,6 +190,20 @@ module.exports = function() {
         })
     }
 
+    // > [GET] host:port/api/refresh/:id
+    // Update the refresh timeout for the node
+    // refresh loop.
+    this.handleTimeoutUpdate = function(timeout, response) {
+        if (timeout < 1000) {
+            response.status(200)
+            response.send("Error : Timeout must be at least 1000 milliseconds")
+        } else {
+            this.sensor.refreshTimeout = timeout
+            response.status(200)
+            response.send("OK")
+        }
+    }
+
     // ------------
     // Alarm
     // ------------

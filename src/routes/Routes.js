@@ -65,6 +65,10 @@ module.exports = function() {
         self.router.get('/homebridge/clean', function(req, res) {
             self.controller.handleHomebridgeClean(res)
         })
+        self.router.get('/refresh/:timeout', function(req, res) {
+            let timeout = parseInt(req.params.timeout, 10)
+            self.controller.handleTimeoutUpdate(timeout, res)
+        })
         self.router.get('/node/list', function(req, res) {
             self.checkUnauthorizedRequest(req)
             self.controller.handleNodeList(res)

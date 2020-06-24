@@ -2,6 +2,7 @@
 module.exports = function() {
     this.storedNodeList = []
     this.storedStatus = []
+    this.refreshTimeout = 1000
 
     this.init = function(freeboxRequest) {
         this.freeboxRequest = freeboxRequest
@@ -27,7 +28,7 @@ module.exports = function() {
             if (this.freeboxRequest == null) { 
                 setTimeout(function() {
                     self.refreshStatus()
-                }, 1000)
+                }, this.refreshTimeout)
                 return
             }
             this.freeboxRequest.request('POST', url, requestData, (statusCode, data) => {
@@ -54,17 +55,18 @@ module.exports = function() {
                 } else {
                     console.log('[!] Unable to recover status for nodes. Got a null response ('+statusCode+')')
                 }
+                console.log('>>> REFRESH TIMEOUT IS : '+this.refreshTimeout)
                 setTimeout(function() {
                     //console.log(this.storedStatus)
                     self.refreshStatus()
-                }, 1000)
+                }, this.refreshTimeout)
             }, false)
         } else {
             this.getNodeList((list) => { })
             var self = this
             setTimeout(function() {
                 self.refreshStatus()
-            }, 1000)
+            }, this.refreshTimeout)
         }
     }
 
