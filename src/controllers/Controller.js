@@ -198,6 +198,7 @@ module.exports = function() {
             response.status(200)
             response.send("Error : Timeout must be at least 1000 milliseconds")
         } else {
+            console.log('[i] Refresh timeout changed : '+timeout)
             this.sensor.refreshTimeout = timeout
             response.status(200)
             response.send("OK")

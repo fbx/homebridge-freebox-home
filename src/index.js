@@ -8,6 +8,11 @@ require('better-logging')(console, {
 
 process.title = "homebridge-freebox-home"
 
+process.on('uncaughtException', function (err) {
+	console.log(err)
+	process.exit(1)
+})
+
 const port = 8888
 
 let app = express()
@@ -28,6 +33,7 @@ let server = app.listen(port, function () {
 						routes.startPollingNodes()
 					} else {
 						server.close()
+						process.exit(1)
 					}
 				})
 			} else {

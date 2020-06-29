@@ -55,7 +55,6 @@ module.exports = function() {
                 } else {
                     console.log('[!] Unable to recover status for nodes. Got a null response ('+statusCode+')')
                 }
-                console.log('>>> REFRESH TIMEOUT IS : '+this.refreshTimeout)
                 setTimeout(function() {
                     //console.log(this.storedStatus)
                     self.refreshStatus()
