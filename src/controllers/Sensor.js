@@ -2,7 +2,7 @@
 module.exports = function() {
     this.storedNodeList = []
     this.storedStatus = []
-    this.refreshTimeout = 1000
+    this.refreshTimeout = 1500
 
     this.init = function(freeboxRequest) {
         this.freeboxRequest = freeboxRequest
