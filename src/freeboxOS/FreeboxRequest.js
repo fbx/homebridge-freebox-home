@@ -13,7 +13,10 @@ module.exports = function() {
 	    token: null
     }
 
+    this.requestQueue = new Array()
+
     this.freeboxAuth = function(token, trackId, callback) {
+        console.log(this.requestQueue)
         this.FreeboxSession.fbx(token, trackId, (token, sessionToken, trackId, challenge) => {
             this.authCallback(token, sessionToken, trackId, challenge)
             callback(token, sessionToken, trackId, challenge)
@@ -32,12 +35,40 @@ module.exports = function() {
         console.log('[i] Updated credentials')
     }
 
+    this.addToQueue = function (method, url, body, callback, autoRetry) {
+        this.requestQueue.push({
+            method: method,
+            url: url,
+            body: body,
+            callback: callback,
+            autoRetry: autoRetry
+        })
+    }
+
     this.request = function(method, url, body, callback, autoRetry) {
-        if (this.credentials.token == null) {
-            console.log('[!] Operation requested with null token')
-            callback(null, null)
-            return
+        if (this.requestQueue == null) {
+            this.startRequest(method, url, body, callback, autoRetry)
+        } else {
+            if (this.requestQueue.length == 0) {
+                this.startRequest(method, url, body, callback, autoRetry)
+            } else {
+                this.addToQueue(method, url, body, callback, autoRetry)
+            }
         }
+    }
+
+    this.startRequest = function(method, url, body, callback, autoRetry) {
+        if (this.requestQueue != null) {
+            if (this.requestQueue.length == 0) {
+                this.requestQueue = this.requestQueue.shift()
+            }
+            if (this.credentials.token == null) {
+                console.log('[!] Operation requested with null token')
+                callback(null, null)
+                return
+            }
+        }
+        
         const options = {
             url: url,
             method: method,
@@ -58,6 +89,7 @@ module.exports = function() {
             // returns the new auth stuff and retry the request
             if ((body.error_code != null && body.error_code == 'auth_required') && self.credentials.challenge != body.result.challenge) {
                 console.log('[i] Fbx authed operation requested without credentials')
+                console.log(body)
                 self.FreeboxSession.session(self.credentials.token, body.result.challenge, (new_sessionToken) => {
                     if(new_sessionToken == null) {
                         if (autoRetry) {
@@ -99,6 +131,14 @@ module.exports = function() {
                     }, self.RETRY_TIMEOUT)
                 } else {
                     callback(response.statusCode, body)
+                }
+                if (self.requestQueue != null) {
+                    if (self.requestQueue.length > 0) {
+                        let next = self.requestQueue[0]
+                        setTimeout(function() {
+                            self.startRequest(next.method, next.url, next.body, next.callback, next.autoRetry)
+                        }, 500) // delay before next operation
+                    }
                 }
             }
         })
