@@ -63,8 +63,10 @@ module.exports = function() {
         this.freeboxRequest.freeboxAuth(null, null, (token, sessionToken, trackId, challenge) => {
             credentials.update(token, trackId, (success) => {
                 callback(success)
-                response.status(200)
-                response.send(sessionToken != null)
+                if (response != null) {
+                    response.status(200)
+                    response.send(sessionToken != null)
+                }
             })
         })
     }

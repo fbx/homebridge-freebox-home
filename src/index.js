@@ -37,8 +37,15 @@ let server = app.listen(port, function () {
 					}
 				})
 			} else {
-				console.log('[!] Token has nil value')
-				app.use('/api', routes.router)
+				console.log('[!] Token has nil value, will request auth')
+				routes.requestNewFreeboxAuthentication((success) => {
+					if (success) {
+						app.use('/api', routes.router)
+					} else {
+						server.close()
+						process.exit(1)
+					}
+				})
 			}
 		})
 	} else {

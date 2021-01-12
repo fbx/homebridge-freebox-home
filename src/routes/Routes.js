@@ -25,6 +25,15 @@ module.exports = function() {
         })
     }
 
+    this.requestNewFreeboxAuthentication = function(callback) {
+        this.controller.handleAuth(null, (success) => {
+            if (success && (this.polling == false)) {
+                this.startPollingNodes()
+            }
+            callback(success)
+        })
+    }
+
     this.checkUnauthorizedRequest = function(request) {
         if (request.headers.host != 'localhost:'+this.port) {
             request.status(401)
