@@ -37,7 +37,7 @@ pm2 start /usr/local/bin/homebridge
 - Then start the server
 
 ```
-npm run start -- auto-auth
+npm run start
 ```
 
 That will automatically setup the environement, pair to the local freebox server and build the homebridge config file.
