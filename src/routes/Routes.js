@@ -34,11 +34,9 @@ module.exports = function() {
         })
     }
 
-    this.checkUnauthorizedRequest = function(request) {
-        if (request.headers.host != 'localhost:'+this.port) {
-            request.status(401)
-            request.send('unauthorized')
-            return
+    this.checkUnauthorizedRequest = function(req, res) {
+        if (req.headers.host != 'localhost:'+this.port) {
+            return res.status(401).send('unauthorized')
         }
     }
 
@@ -79,36 +77,36 @@ module.exports = function() {
             self.controller.handleTimeoutUpdate(timeout, res)
         })
         self.router.get('/node/list', function(req, res) {
-            self.checkUnauthorizedRequest(req)
+            self.checkUnauthorizedRequest(req, res)
             self.controller.handleNodeList(res)
         })
         self.router.get('/node/:id', function(req, res) {
-            self.checkUnauthorizedRequest(req)
+            self.checkUnauthorizedRequest(req, res)
             let nodeId = parseInt(req.params.id, 10)
             self.controller.handleNodeStatus(nodeId, res)
         })
         self.router.get('/alarm/main', function(req, res) {
-            self.checkUnauthorizedRequest(req)
+            self.checkUnauthorizedRequest(req, res)
             self.controller.handleAlarmMain(res)
         })
         self.router.get('/alarm/secondary', function(req, res) {
-            self.checkUnauthorizedRequest(req)
+            self.checkUnauthorizedRequest(req, res)
             self.controller.handleAlarmSecondary(res)
         })
         self.router.get('/alarm/off', function(req, res) {
-            self.checkUnauthorizedRequest(req)
+            self.checkUnauthorizedRequest(req, res)
             self.controller.handleAlarmOff(res)
         })
         self.router.get('/alarm/home', function(req, res) {
-            self.checkUnauthorizedRequest(req)
+            self.checkUnauthorizedRequest(req, res)
             self.controller.handleAlarmOff(res)
         })
         self.router.get('/alarm/target', function(req, res) {
-            self.checkUnauthorizedRequest(req)
+            self.checkUnauthorizedRequest(req, res)
             self.controller.handleAlarmTarget(res)
         })
         self.router.get('/alarm/state', function(req, res) {
-            self.checkUnauthorizedRequest(req)
+            self.checkUnauthorizedRequest(req, res)
             self.controller.handleAlarmState(res)
         })
         self.router.get('/log/server', function(req, res) {
