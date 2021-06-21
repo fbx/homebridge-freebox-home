@@ -1,3 +1,6 @@
+# ⚠️ This project is no longer maintained ⚠️
+Due to changes in the Freebox Home product and tech roadmap, this project wont be maintained, issues and pull requests will be disabled.
+
 <p align="center">
   <img src="https://github.com/fbx/homebridge-freebox-home/raw/master/logo.png" data-canonical-src="https://github.com/fbx/homebridge-freebox-home/raw/master/logo.png" width="232" height="120" />
 </p>
